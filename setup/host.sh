@@ -18,7 +18,7 @@ PASSWORD="def456"
 COPY_AUTHORIZED_KEYS_FROM_ROOT=false
 
 # Specify if it's to add the user to the docker group
-ADD_USER_TO_DOCKER_GROUP=false
+# ADD_USER_TO_DOCKER_GROUP=false
 
 # Specify if the machine is an Ansible Server
 ANSIBLE_SERVER=false
@@ -99,7 +99,8 @@ if sshd -t -q; then
 fi
 
 # Add exception for SSH and then enable UFW firewall
-ufw allow OpenSSH
+ufw allow 22
+ufw allow 6443
 ufw --force enable
 
 apt autoremove -y
@@ -110,34 +111,34 @@ echo "Main logic finished" >> "/home/$USERNAME/setup.log"
 ###      DOCKER      ###
 ########################
 
-if [ "${ANSIBLE_HOST}" = true ]; then
-	echo "Installing Docker..." >> "/home/$USERNAME/setup.log"
+# if [ "${ANSIBLE_HOST}" = true ]; then
+# 	echo "Installing Docker..." >> "/home/$USERNAME/setup.log"
 
-	# First, update your existing list of packages
-	apt update
+# 	# First, update your existing list of packages
+# 	apt update
 
-	# Next, install a few prerequisite packages which let apt use packages over HTTPS
-	apt install -y apt-transport-https ca-certificates curl software-properties-common
+# 	# Next, install a few prerequisite packages which let apt use packages over HTTPS
+# 	apt install -y apt-transport-https ca-certificates curl software-properties-common
 
-	# Then add the GPG key for the official Docker repository to your system
-	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+# 	# Then add the GPG key for the official Docker repository to your system
+# 	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 
-	# Add the Docker repository to APT sources
-	add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" -y
+# 	# Add the Docker repository to APT sources
+# 	add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable" -y
 
-	# Next, update the package database with the Docker packages from the newly added repo
-	apt update
+# 	# Next, update the package database with the Docker packages from the newly added repo
+# 	apt update
 
-	# Finally, install Docker
-	apt install -y docker-ce
+# 	# Finally, install Docker
+# 	apt install -y docker-ce
 
-	# Add the user to the docker group if requested
-	if [ "${ADD_USER_TO_DOCKER_GROUP}" = true ]; then
-		usermod -aG docker $USERNAME
-	fi
+# 	# Add the user to the docker group if requested
+# 	if [ "${ADD_USER_TO_DOCKER_GROUP}" = true ]; then
+# 		usermod -aG docker $USERNAME
+# 	fi
 
-	echo "Docker Installed" >> "/home/$USERNAME/setup.log"
-fi
+# 	echo "Docker Installed" >> "/home/$USERNAME/setup.log"
+# fi
 
 ########################
 ###      ANSIBLE     ###

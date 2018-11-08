@@ -18,6 +18,7 @@ ansible-playbook -i hosts ~/kube-cluster/initial.yml
 #
 # 2) Second Play 
 # >Consists of a single task that installs kubectl on your master node.
+ansible-playbook -i hosts ~/kube-cluster/docker-dependencies.yml
 ansible-playbook -i hosts ~/kube-cluster/kube-dependencies.yml
 
 # The first task initializes the cluster by running kubeadm init. 

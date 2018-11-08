@@ -18,4 +18,4 @@
       - ca-certificates
       - curl
       - software-properties-common
-      - docker-ce=18.03.0-ce
+      - docker-ce=18.03.1~ce-0~ubuntu

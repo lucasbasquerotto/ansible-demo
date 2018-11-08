@@ -138,7 +138,7 @@ if sshd -t -q; then
 fi
 
 # Add exception for SSH and then enable UFW firewall
-ufw allow OpenSSH
+ufw allow 22
 ufw --force enable
 
 apt autoremove -y

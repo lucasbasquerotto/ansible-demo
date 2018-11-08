@@ -4,6 +4,7 @@ master ansible_host=master.kube ansible_user=host ansible_become_pass="def456"
 [workers]
 worker1 ansible_host=worker-001.kube ansible_user=host ansible_become_pass="def456"
 worker2 ansible_host=worker-002.kube ansible_user=host ansible_become_pass="def456"
+worker2 ansible_host=worker-003.kube ansible_user=host ansible_become_pass="def456"
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3

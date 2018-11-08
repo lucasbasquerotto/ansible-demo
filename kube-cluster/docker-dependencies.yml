@@ -10,12 +10,12 @@
 
   - name: Install list of packages
     apt:
-      name: "{{ item }}"
+      name:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - software-properties-common
+        - docker-ce=18.03.1~ce-0~ubuntu
       state: present
       update_cache: yes
-    with_items:
-      - apt-transport-https
-      - ca-certificates
-      - curl
-      - software-properties-common
-      - docker-ce=18.03.1~ce-0~ubuntu
+      autoclean: yes

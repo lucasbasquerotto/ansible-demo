@@ -20,7 +20,7 @@
   - name: verify if variables are defined
     fail: 
       msg: "Variable '{{ item }}' is not defined"
-    when: item is undefined
+    when: item is undefined or item == ""
     with_items: 
     - domain
     - api_token

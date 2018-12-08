@@ -80,11 +80,16 @@
     with_nested:
     - "{{ droplet_details.results }}"
     - "{{ do_tags }}"
+    loop_control:
+      label: "{{ item[0].droplet.name }}"
 
   - name: create a domain record for each corresponding droplet
     digital_ocean_domain:
+      api_token: "{{ api_token }}"
       state: present
       name: "{{ item.droplet.name }}.internal.{{ domain }}"
       ip: "{{ item.droplet.ip_address }}"
     with_items:
     - "{{ droplet_details.results }}"
+    loop_control:
+      label: "{{ item.droplet.name }}"

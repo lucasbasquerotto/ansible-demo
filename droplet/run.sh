@@ -11,4 +11,4 @@ mkdir chef-repo
 shopt -s dotglob
 mv ansible-demo/droplet/* ansible/
 
-ansible-playbook ~/test.yml
+ansible-playbook ~/ansible/droplet.yml

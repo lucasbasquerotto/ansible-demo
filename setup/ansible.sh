@@ -20,9 +20,6 @@ PASSWORD="abc123"
 ## COPY_AUTHORIZED_KEYS_FROM_ROOT=true
 COPY_AUTHORIZED_KEYS_FROM_ROOT=false
 
-# Specify if the machine is an Ansible Server
-ANSIBLE_SERVER=true
-
 # Additional public keys to add to the new sudo user
 # OTHER_PUBLIC_KEYS_TO_ADD=(
 #	"ssh-rsa AAAAB..."
@@ -71,11 +68,6 @@ EOM
 ####################
 ### SCRIPT LOGIC ###
 ####################
-
-case "$ANSIBLE_SERVER" in
-	true) ANSIBLE_HOST=false ;;
-	*) ANSIBLE_HOST=true ;;
-esac
 
 # Add sudo user and grant privileges
 useradd --create-home --shell "/bin/bash" --groups sudo "${USERNAME}"

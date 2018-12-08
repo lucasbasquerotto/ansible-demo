@@ -1,0 +1,54 @@
+- hosts: digitalocean
+  vars:
+    do_tags:      
+      - host
+      - test-do
+    droplets:
+      - { id: '001', name: 'kube-001' }
+      # - { id: '002', name: 'kube-002' }
+      # - { id: '003', name: 'kube-003' }
+  tasks:
+  - name: create tags
+    digital_ocean_tag:
+      api_token: "{{ lookup('env', 'DO_TOKEN') }}"
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - "{{ do_tags }}"
+
+  # - name: create droplets
+  #   digital_ocean:
+  #     api_token: "{{ lookup('env', 'DO_TOKEN') }}"
+  #     id: "{{ item.id }}"
+  #     name: "{{ item.name }}"
+  #     state: present
+  #     command: droplet
+  #     size_id: 1gb
+  #     region_id: nyc1
+  #     image_id: ubuntu-18-04-x64
+  #     private_networking: yes
+  #     ipv6 : yes
+  #     user_data: "{{ lookup('template', 'user_data.j2') | trim }}"
+  #     wait_timeout: 500
+  #   register: digital_ocean
+  #   with_items:
+  #     - "{{ droplets }}"
+
+  # - debug:
+  #     var: digital_ocean
+
+  # - debug:
+  #     msg: "ID is {{ testhost.droplet.id }}"
+
+  # - debug:
+  #     msg: "IP is {{ testhost.droplet.ip_address }}"
+
+  - name: tag a resource; creating the tag if it does not exist
+    digital_ocean_tag:
+      api_token: "{{ lookup('env', 'DO_TOKEN') }}"
+      resource_id: "{{ item[0].id }}"
+      name: "{{ item[1] }}"
+      state: present
+    with_items:
+      - "{{ droplets }}"
+      - "{{ do_tags }}"

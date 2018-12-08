@@ -23,8 +23,8 @@
   tasks:
   - name: verify if variables are defined
     fail: 
-      msg: "Variable '{{ item }}' is not defined"
-    when: item is undefined or item == ""
+      msg: "Variable '{{ item.name }}' is not defined"
+    when: item.value is undefined or item.value == ""
     with_items:
     - { name: "api_token", value: "{{ api_token }}"}
     - { name: "domain", value: "{{ domain }}"}

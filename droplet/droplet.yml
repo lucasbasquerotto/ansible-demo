@@ -11,7 +11,7 @@
       domain: "{{ domain }}"
       host_user: "{{ host_user }}"
       host_pass: "{{ host_pass }}"
-      host_ssh_public_key: "{{ host_ssh_public_key }}")
+      host_ssh_public_key: "{{ host_ssh_public_key }}"
     host_user_data: "{{ lookup('template', 'user_data.j2', template_vars=dict(host_vars)) | trim }}"
     do_tags:      
     - host

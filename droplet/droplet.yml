@@ -1,6 +1,6 @@
 - hosts: main
   vars_files: 
-    - home/main/env/env.yml
+    - /home/main/env/env.yml
   vars:
     api_token: "{{ env.DO_TOKEN }}"
     domain: "{{ env.DOMAIN }}"

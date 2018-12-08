@@ -14,8 +14,8 @@ shopt -s dotglob
 mv ansible-demo/droplet/* ansible/
 rm -rf ansible-demo
 
-mkdir ~/env
-mv ~/ansible/env.yml ~/env/env.yml
+mkdir -p ~/env
+mv -vn ~/ansible/env.yml ~/env/env.yml
 
 # ansible-playbook ~/ansible/droplet.yml
 cd ~/ansible/

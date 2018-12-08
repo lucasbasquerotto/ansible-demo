@@ -26,13 +26,15 @@
       msg: "Variable '{{ item }}' is not defined"
     when: item is undefined or item == ""
     with_items:
-    - "{{ api_token }}" 
-    - "{{ domain }}" 
-    - "{{ host_user }}" 
-    - "{{ host_pass }}" 
-    - "{{ host_user }}" 
-    - "{{ host_ssh_public_key }}" 
-    - "{{ host_user_data }}" 
+    - { name: "api_token", value: "{{ api_token }}"}
+    - { name: "domain", value: "{{ domain }}"}
+    - { name: "host_user", value: "{{ host_user }}"}
+    - { name: "host_pass", value: "{{ host_pass }}"}
+    - { name: "host_user", value: "{{ host_user }}"}
+    - { name: "host_ssh_public_key", value: "{{ host_ssh_public_key }}"}
+    - { name: "host_user_data", value: "{{ host_user_data }}"}
+    loop_control:
+      label: "{{ item.name }}"
       
   - name: create tags
     digital_ocean_tag:

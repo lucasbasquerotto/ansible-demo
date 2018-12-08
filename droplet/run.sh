@@ -2,7 +2,10 @@
 set -e
 
 GIT_REPO="https://github.com/lucasbasquerotto/ansible-demo.git"
- 
+
+rm -rf ansible-demo
+rm -rf ansible
+
 cd ~
 git clone "$GIT_REPO"
 mkdir ansible

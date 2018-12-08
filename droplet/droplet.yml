@@ -1,4 +1,4 @@
-- hosts: digitalocean
+- hosts: main
   vars_files: 
     - required_vars.yml
   vars:

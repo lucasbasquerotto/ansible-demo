@@ -13,4 +13,6 @@ shopt -s dotglob
 mv ansible-demo/droplet/* ansible/
 rm -rf ansible-demo
 
-ansible-playbook ~/ansible/droplet.yml
+# ansible-playbook ~/ansible/droplet.yml
+cd ~/ansible/
+ansible-playbook droplet.yml

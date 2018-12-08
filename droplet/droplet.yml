@@ -81,7 +81,7 @@
     - "{{ droplet_details.results }}"
     - "{{ do_tags }}"
     loop_control:
-      label: "{{ item[0].droplet.name }}"
+      label: "droplet: {{ item[0].droplet.name }} - tag: {{ item[1] }}"
 
   - name: create a domain record for each corresponding droplet
     digital_ocean_domain:

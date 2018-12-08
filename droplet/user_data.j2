@@ -7,18 +7,15 @@ set -euo pipefail
 
 # Name of the user to create and grant sudo privileges
 ## USERNAME=sammy
-USERNAME="host"
+USERNAME="{{ host_user }}"
 
 # Password of the user to create and grant sudo privileges
-PASSWORD="def456"
+PASSWORD="{{ host_pass }}"
 
 # Whether to copy over the root user's `authorized_keys` file to the new sudo
 # user.
 ## COPY_AUTHORIZED_KEYS_FROM_ROOT=true
 COPY_AUTHORIZED_KEYS_FROM_ROOT=false
-
-# Specify if it's to add the user to the docker group
-# ADD_USER_TO_DOCKER_GROUP=false
 
 # Additional public keys to add to the new sudo user
 # OTHER_PUBLIC_KEYS_TO_ADD=(
@@ -26,9 +23,7 @@ COPY_AUTHORIZED_KEYS_FROM_ROOT=false
 #	"ssh-rsa AAAAB..."
 # )
 ## OTHER_PUBLIC_KEYS_TO_ADD=()
-OTHER_PUBLIC_KEYS_TO_ADD=(
-	"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDd+PSVvCsSiE/k1IBeG1aL/l4eZKTGcgzZ9xfogI+UONcrdxymX/goaORKMQwl6W/SPAW2yg0BN+o17HkIxssTptCHpX8czfkXOW4/wW26vq7w4X9lueihnrp3IzKlYLtfPCf69uK58bKRWZuuTz8EJYuVBV73GdcM4LHoRf+3FOew+rGZwKrMBsIN63WK68+obzaBz2gTYZxJAnyzOWPIK2c+nlWHkjMHlN/3Eyy1fo08GJKNbhH83YFjc9gfEQYQiCq2wLlAaHqFOqGLsNzn2to3P4DkVaKyL6qWSIrpIuxFryd4hb94Qx4iHCghvvvc+JpF+iZlO3Tko4/Q0Gy9 ansible@dev-ubuntu-01"
-)
+OTHER_PUBLIC_KEYS_TO_ADD=( "{{ host_ssh_public_key }}" )
 
 ####################
 ### SCRIPT LOGIC ###

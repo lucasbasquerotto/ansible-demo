@@ -1,55 +1,83 @@
 - hosts: digitalocean
+  vars_files: 
+    - required_vars.yml
   vars:
+    api_token: "{{ required_vars.DO_TOKEN }}"
+    domain: "{{ required_vars.DOMAIN }}"
+    host_user: "{{ required_vars.HOST_USER_NAME }}"
+    host_pass: "{{ required_vars.HOST_USER_PASS }}"
+    host_ssh_public_key: "{{ required_vars.SSH_PUBLIC_KEY }}"
+    host_vars: dict(domain="{{ domain }}", host_user="{{ host_user }}", host_pass="{{ host_pass }}", host_ssh_public_key="{{ host_ssh_public_key }}")
+    host_user_data: "{{ lookup('template', 'user_data.j2', template_vars=host_vars) | trim }}"
     do_tags:      
-      - host
-      - test-do
+    - host
+    - test-do
     droplets:
-      - { id: '001', name: 'kube-001' }
-      - { id: '002', name: 'kube-002' }
-      # - { id: '003', name: 'kube-003' }
+    - { id: '001', name: 'kube-001', state: present }
+    - { id: '002', name: 'kube-002', state: present }
+    - { id: '003', name: 'kube-003', state: present }
   tasks:
+  - name: verify if variables are defined
+    fail: 
+      msg: "Variable '{{ item }}' is not defined"
+    when: item is undefined
+    with_items: 
+    - domain
+    - api_token
+    - host_user
+    - host_pass
+    - host_user
+    - host_ssh_public_key
+    - host_user_data
+      
   - name: create tags
     digital_ocean_tag:
-      api_token: "{{ lookup('env', 'DO_TOKEN') }}"
+      api_token: "{{ api_token }}"
       name: "{{ item }}"
       state: present
     with_items:
-      - "{{ do_tags }}"
+    - "{{ do_tags }}"
 
   - name: create droplets
     digital_ocean:
-      api_token: "{{ lookup('env', 'DO_TOKEN') }}"
+      api_token: "{{ api_token }}"
       id: "{{ item.id }}"
       name: "{{ item.name }}"
       unique_name: yes
-      state: present
+      state: "{{ item.state }}"
       command: droplet
       size_id: 1gb
       region_id: nyc1
       image_id: ubuntu-18-04-x64
       private_networking: yes
       ipv6 : yes
-      user_data: "{{ lookup('template', 'user_data.j2') | trim }}"
+      user_data: "{{ host_user_data }}"
       wait_timeout: 500
-    register: digital_ocean
     with_items:
-      - "{{ droplets }}"
+    - "{{ droplets }}"
+    loop_control:
+      label: "{{ item.name }}"
+    register: droplet_details
 
-  - debug:
-      var: digital_ocean
+  - debug: msg="IP of droplet {{ item.droplet.name }} ({{ item.droplet.id }}) is {{ item.droplet.ip_address }}"
+    with_items: droplet_details.results
+    loop_control:
+      label: "{{ item.droplet.name }}"
 
-  # - debug:
-  #     msg: "ID is {{ testhost.droplet.id }}"
-
-  # - debug:
-  #     msg: "IP is {{ testhost.droplet.ip_address }}"
-
-  - name: tag a resource; creating the tag if it does not exist
+  - name: tag each droplet
     digital_ocean_tag:
-      api_token: "{{ lookup('env', 'DO_TOKEN') }}"
+      api_token: "{{ api_token }}"
       resource_id: "{{ item[0].droplet.id }}"
       name: "{{ item[1] }}"
       state: present
     with_nested:
-      - "{{ digital_ocean.results }}"
-      - "{{ do_tags }}"
+    - "{{ droplet_details.results }}"
+    - "{{ do_tags }}"
+
+  - name: create a domain record for each corresponding droplet
+  - digital_ocean_domain:
+      state: present
+      name: "{{ item.droplet.name }}.internal.{{ domain }}"
+      ip: "{{ item.droplet.ip_address }}"
+    with_items:
+    - "{{ droplet_details.results }}"

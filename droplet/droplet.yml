@@ -75,7 +75,7 @@
     - "{{ do_tags }}"
 
   - name: create a domain record for each corresponding droplet
-  - digital_ocean_domain:
+    digital_ocean_domain:
       state: present
       name: "{{ item.droplet.name }}.internal.{{ domain }}"
       ip: "{{ item.droplet.ip_address }}"

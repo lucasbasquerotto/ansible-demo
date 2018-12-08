@@ -185,3 +185,5 @@ apt-get install -y python-pip
 yes | pip install 'dopy>=0.3.5,<=0.3.5'
 
 echo "Setup Finished" >> "/home/$USERNAME/setup.log"
+
+# On error, verify with: $ tail -n 100 /var/log/cloud-init-output.log

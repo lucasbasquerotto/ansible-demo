@@ -21,14 +21,14 @@
     fail: 
       msg: "Variable '{{ item }}' is not defined"
     when: item is undefined or item == ""
-    with_items: 
-    - domain
-    - api_token
-    - host_user
-    - host_pass
-    - host_user
-    - host_ssh_public_key
-    - host_user_data
+    with_items:
+    - "{{ api_token }}" 
+    - "{{ domain }}" 
+    - "{{ host_user }}" 
+    - "{{ host_pass }}" 
+    - "{{ host_user }}" 
+    - "{{ host_ssh_public_key }}" 
+    - "{{ host_user_data }}" 
       
   - name: create tags
     digital_ocean_tag:

@@ -20,8 +20,8 @@
     - test-do
     droplets:
     - { id: '001', name: 'kube-001', state: present }
-    # - { id: '002', name: 'kube-002', state: present }
-    # - { id: '003', name: 'kube-003', state: deleted }
+    - { id: '002', name: 'kube-002', state: present }
+    - { id: '003', name: 'kube-003', state: deleted }
   tasks:
   - name: verify if variables are defined
     fail: 
@@ -104,8 +104,6 @@
     loop_control:
       label: "{{ item.droplet.name }}"
 
-  - debug: msg="masters='{{ masters }}'"
-
   - name: Update the hosts file with the generated hosts
     blockinfile:
       path: "{{ hosts_file }}"
@@ -130,8 +128,8 @@
 - name: Play 02 - Update configuration
   hosts: masters
   tasks:
-  - name: print last line of setup.log
-    shell: tail -n 1 /home/host/setup.log
+  - name: retrieve last line of setup.log
+    shell: tail -n 1 /var/log/setup.log
     register: setup_finished
 
   - debug: msg="setup_finished='{{ setup_finished }}'"

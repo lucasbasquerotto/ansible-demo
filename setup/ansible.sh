@@ -93,7 +93,7 @@ else
 	passwd --delete "${USERNAME}"
 	echo "$USERNAME:$PASSWORD" | chpasswd
 
-	echo "New password defined for $USERNAME" >> "/home/$USERNAME/setup.log"
+	echo "New password defined for $USERNAME" >> "/var/log/setup.log"
 
 	if [ "${encrypted_root_pw}" != "*" ]; then
 		passwd --lock root
@@ -131,13 +131,13 @@ ufw --force enable
 
 apt autoremove -y
 
-echo "Main logic finished" >> "/home/$USERNAME/setup.log"
+echo "Main logic finished" >> "/var/log/setup.log"
 
 ########################
 ###     VPN DNS      ###
 ########################
 
-echo "Defining VPN DNS..." >> "/home/$USERNAME/setup.log"
+echo "Defining VPN DNS..." >> "/var/log/setup.log"
 
 apt install -y resolvconf
 
@@ -151,13 +151,13 @@ touch /etc/resolvconf/resolv.conf.d/head
 
 resolvconf -u
 
-echo "VPN DNS Defined" >> "/home/$USERNAME/setup.log"
+echo "VPN DNS Defined" >> "/var/log/setup.log"
 
 ########################
 ###      ANSIBLE     ###
 ########################
 
-echo "Installing Ansible..." >> "/home/$USERNAME/setup.log"
+echo "Installing Ansible..." >> "/var/log/setup.log"
 
 apt update
 apt install -y software-properties-common
@@ -178,10 +178,10 @@ chmod 644 "/home/$USERNAME/.ssh/id_rsa.pub"
 
 chown --recursive "${USERNAME}":"${USERNAME}" "/home/$USERNAME/.ssh"
 
-echo "Ansible Installed" >> "/home/$USERNAME/setup.log"
+echo "Ansible Installed" >> "/var/log/setup.log"
 
 apt-get install -y python-pip
 
-echo "Setup Finished" >> "/home/$USERNAME/setup.log"
+echo "Setup Finished" >> "/var/log/setup.log"
 
 # On error, verify with: $ tail -n 100 /var/log/cloud-init-output.log

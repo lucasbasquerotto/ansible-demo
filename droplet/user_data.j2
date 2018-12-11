@@ -53,7 +53,7 @@ else
 	passwd --delete "${USERNAME}"
 	echo "$USERNAME:$PASSWORD" | chpasswd
 
-	echo "New password defined for $USERNAME" >> "/home/$USERNAME/setup.log"
+	echo "New password defined for $USERNAME" >> "/var/log/setup.log"
 
 	if [ "${encrypted_root_pw}" != "*" ]; then
 		passwd --lock root
@@ -92,17 +92,17 @@ fi
 
 apt autoremove -y
 
-echo "Main logic finished" >> "/home/$USERNAME/setup.log"
+echo "Main logic finished" >> "/var/log/setup.log"
 
 ########################
 ###      ANSIBLE     ###
 ########################
 
-echo "Preparing Ansible Host..." >> "/home/$USERNAME/setup.log"
+echo "Preparing Ansible Host..." >> "/var/log/setup.log"
 
 apt update
 apt install -y python
 
-echo "Ansible Host Prepared" >> "/home/$USERNAME/setup.log"
+echo "Ansible Host Prepared" >> "/var/log/setup.log"
 
-echo "Setup Finished" >> "/home/$USERNAME/setup.log"
+echo "Setup Finished" >> "/var/log/setup.log"

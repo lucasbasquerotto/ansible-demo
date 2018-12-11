@@ -111,7 +111,7 @@
       path: "{{ hosts_file }}"
       marker: "# {mark} ANSIBLE MANAGED BLOCK - MASTERS"
       insertafter: "[masters]"
-      block: {{ masters }}
+      block: "{{ masters }}"
 
   - name: refresh inventory
     meta: refresh_inventory

@@ -20,8 +20,8 @@
     - test-do
     droplets:
     - { id: '001', name: 'kube-001', state: present }
-    - { id: '002', name: 'kube-002', state: deleted }
-    - { id: '003', name: 'kube-003', state: present }
+    - { id: '002', name: 'kube-002', state: present }
+    - { id: '003', name: 'kube-003', state: deleted }
     - { id: '004', name: 'kube-004', state: present }
   tasks:
   - name: verify if variables are defined
@@ -109,24 +109,13 @@
   - name: refresh inventory
     meta: refresh_inventory
 
-  # - name: create a domain record for each corresponding droplet
-  #   digital_ocean_domain:
-  #     api_token: "{{ api_token }}"
-  #     state: present
-  #     name: "{{ item.name }}.internal.{{ domain }}"
-  #     ip: "{{ item.ip_address }}"
-  #   with_items:
-  #   - "{{ active_droplets }}"
-  #   loop_control:
-  #     label: "{{ item.name }}"
-
 - name: Play 02 - Update configuration
   hosts: masters
   tasks:
-  - name: Wait 600 seconds for target connection to become reachable/usable
+  - name: Wait 300 seconds for target connection to become reachable/usable
     wait_for_connection:
       connect_timeout: 5
-      delay: 0
+      delay: 30
       sleep: 1
       timeout: 300
 

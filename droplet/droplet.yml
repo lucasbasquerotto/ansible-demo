@@ -19,9 +19,9 @@
     - host
     - test-do
     droplets:
-    - { id: '001', name: 'kube-001', state: present }
+    - { id: '001', name: 'kube-001', state: deleted }
     - { id: '002', name: 'kube-002', state: present }
-    - { id: '003', name: 'kube-003', state: deleted }
+    - { id: '003', name: 'kube-003', state: present }
   tasks:
   - name: verify if variables are defined
     fail: 

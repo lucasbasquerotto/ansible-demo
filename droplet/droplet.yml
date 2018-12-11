@@ -1,4 +1,5 @@
-- hosts: main
+- name: Play 01 - Create droplets and define hosts
+  hosts: main
   vars_files: 
     - /home/main/env/env.yml
   vars:
@@ -7,6 +8,7 @@
     host_user: "{{ env.HOST_USER_NAME }}"
     host_pass: "{{ env.HOST_USER_PASS }}"
     host_ssh_public_key: "{{ env.SSH_PUBLIC_KEY }}"
+    hosts_file: "{{ env.HOSTS_FILE }}"
     host_vars: 
       domain: "{{ domain }}"
       host_user: "{{ host_user }}"
@@ -65,11 +67,20 @@
       label: "{{ item.name }}"
     register: droplet_details
 
-  - debug: msg="IP of droplet {{ item.droplet.name }} ({{ item.droplet.id }}) is {{ item.droplet.ip_address }}"
+  - debug: msg="IP of droplet {{ item.droplet.name }} is {{ item.droplet.ip_address }}"
     with_items: 
     - "{{ droplet_details.results }}"
     loop_control:
       label: "{{ item.droplet.name }}"
+
+  # - name: add hosts
+  #   add_host: 
+  #     name: "{{ item.droplet.ip_address }}"
+  #     group: "masters"
+  #   with_items: 
+  #   - "{{ droplet_details.results }}"
+  #   loop_control:
+  #     label: "{{ item.droplet.name }}"
 
   - name: tag each droplet
     digital_ocean_tag:
@@ -83,13 +94,47 @@
     loop_control:
       label: "droplet: {{ item[0].droplet.name }} - tag: {{ item[1] }}"
 
-  - name: create a domain record for each corresponding droplet
-    digital_ocean_domain:
-      api_token: "{{ api_token }}"
-      state: present
-      name: "{{ item.droplet.name }}.internal.{{ domain }}"
-      ip: "{{ item.droplet.ip_address }}"
-    with_items:
+  - name: Generate hosts to populate the hosts file
+    set_fact: 
+      masters: > 
+        {{ masters }} |
+        {{ item.droplet.name }} ansible_host={{ item.droplet.ip_address }} ansible_user={{ host_user }} ansible_become_pass={{ host_pass }}
+    with_items: 
     - "{{ droplet_details.results }}"
     loop_control:
       label: "{{ item.droplet.name }}"
+
+  - name: Update the hosts file with the generated hosts
+    blockinfile:
+      path: "{{ hosts_file }}"
+      marker: "# {mark} ANSIBLE MANAGED BLOCK - MASTERS"
+      insertafter: "[masters]"
+      block: {{ masters }}
+
+    - name: refresh inventory
+      meta: refresh_inventory
+
+  # - name: create a domain record for each corresponding droplet
+  #   digital_ocean_domain:
+  #     api_token: "{{ api_token }}"
+  #     state: present
+  #     name: "{{ item.droplet.name }}.internal.{{ domain }}"
+  #     ip: "{{ item.droplet.ip_address }}"
+  #   with_items:
+  #   - "{{ droplet_details.results }}"
+  #   loop_control:
+  #     label: "{{ item.droplet.name }}"
+
+- name: Play 02 - Update configuration
+  hosts: masters
+  tasks:
+  - name: print last line of setup.log
+    shell: tail -n 1 /home/host/setup.log
+    register: setup_finished
+
+  - debug: msg="setup_finished='{{ setup_finished }}'"
+    
+  - name: verify if the setup was finished successfully
+    fail: 
+      msg: "Variable '{{ setup_finished }}' should be equal to 'Setup Finished'"
+    when: setup_finished != "Setup Finished"

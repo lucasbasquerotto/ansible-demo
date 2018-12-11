@@ -135,6 +135,9 @@
     register: setup_finished
 
   - debug: msg="setup_finished='{{ setup_finished }}'"
+
+  - name: Update variable setup_finished
+    set_fact: setup_finished="{{ setup_finished.stdout }}"
     
   - name: verify if the setup was finished successfully
     fail: 

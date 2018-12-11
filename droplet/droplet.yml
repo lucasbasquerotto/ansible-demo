@@ -154,7 +154,7 @@
       timeout: 60
       path: "{{ log_file }}"
       search_regex: "{{ setup_last_line }}"
-      msg: Timeout to find file {{ log_file }}
+      msg: Timeout to find "{{ setup_last_line }}" inside file {{ log_file }}
 
   - name: retrieve last line of {{ log_file }}
     shell: tail -n 1 {{ log_file }}

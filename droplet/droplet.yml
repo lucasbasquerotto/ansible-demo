@@ -113,8 +113,8 @@
       insertafter: "[masters]"
       block: {{ masters }}
 
-    - name: refresh inventory
-      meta: refresh_inventory
+  - name: refresh inventory
+    meta: refresh_inventory
 
   # - name: create a domain record for each corresponding droplet
   #   digital_ocean_domain:

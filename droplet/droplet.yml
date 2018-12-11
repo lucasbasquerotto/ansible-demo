@@ -97,7 +97,7 @@
   - name: Generate hosts to populate the hosts file
     set_fact: 
       masters: |
-        {{ masters }}
+        {{ masters | default('') }}
         {{ item.droplet.name }} ansible_host={{ item.droplet.ip_address }} ansible_user={{ host_user }} ansible_become_pass={{ host_pass }}
     with_items: 
     - "{{ droplet_details.results }}"

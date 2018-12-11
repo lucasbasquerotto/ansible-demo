@@ -3,6 +3,8 @@ set -e
 
 GIT_REPO="https://github.com/lucasbasquerotto/ansible-demo.git"
 
+yes | pip install 'dopy>=0.3.5,<=0.3.5'
+
 cd ~
 
 rm -rf ansible-demo

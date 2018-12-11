@@ -21,8 +21,8 @@
     droplets:
     - { id: '001', name: 'kube-001', state: present }
     - { id: '002', name: 'kube-002', state: present }
-    - { id: '003', name: 'kube-003', state: deleted }
-    - { id: '004', name: 'kube-004', state: present }
+    - { id: '003', name: 'kube-003', state: present }
+    - { id: '004', name: 'kube-004', state: deleted }
   tasks:
   - name: verify if variables are defined
     fail: 
@@ -116,12 +116,15 @@
     log_file: "/var/log/setup.log"
     setup_last_line: "Setup Finished"
   tasks:
-  - name: Wait 300 seconds for target connection to become reachable/usable
+  - name: Wait 60 seconds for target connection to become reachable/usable
     wait_for_connection:
       connect_timeout: 5
       delay: 0
       sleep: 1
       timeout: 60
+
+  - name: Gathering facts
+    setup:
 
   - name: Make sure the file /usr/bin/python is present
     wait_for:
@@ -143,7 +146,7 @@
       state: present
       msg: Timeout to find file {{ log_file }}
 
-  - name: Make sure the file {{ log_file }} has {{ setup_last_line }} in it
+  - name: Make sure the file {{ log_file }} has "{{ setup_last_line }}" in it
     wait_for:
       connect_timeout: 5
       delay: 0
@@ -165,7 +168,4 @@
   - name: verify if the setup was finished successfully
     fail: 
       msg: "Variable '{{ last_line }}' should be equal to '{{ setup_last_line }}'"
-    when: last_line != "{{ setup_last_line }}"
-
-  - name: Gathering facts
-    setup:
+    when: last_line != setup_last_line

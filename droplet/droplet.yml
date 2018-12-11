@@ -20,9 +20,9 @@
     - test-do
     droplets:
     - { id: '001', name: 'kube-001', state: present }
-    - { id: '002', name: 'kube-002', state: present }
+    - { id: '002', name: 'kube-002', state: deleted }
     - { id: '003', name: 'kube-003', state: present }
-    - { id: '004', name: 'kube-004', state: deleted }
+    - { id: '004', name: 'kube-004', state: present }
   tasks:
   - name: verify if variables are defined
     fail: 
@@ -128,7 +128,17 @@
       connect_timeout: 5
       delay: 0
       sleep: 1
-      timeout: 600
+      timeout: 300
+
+  - name: Output customized message when failed
+    wait_for:
+      connect_timeout: 5
+      delay: 0
+      sleep: 1
+      timeout: 300
+      path: /usr/bin/python
+      state: present
+      msg: Timeout to find file /usr/bin/python
 
   - name: retrieve last line of setup.log
     shell: tail -n 1 /var/log/setup.log

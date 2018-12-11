@@ -123,6 +123,13 @@
 - name: Play 02 - Update configuration
   hosts: masters
   tasks:
+  - name: Wait 600 seconds for target connection to become reachable/usable
+    wait_for_connection:
+      connect_timeout: 5
+      delay: 0
+      sleep: 1
+      timeout: 600
+
   - name: retrieve last line of setup.log
     shell: tail -n 1 /var/log/setup.log
     register: last_line

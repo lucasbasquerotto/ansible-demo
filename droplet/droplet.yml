@@ -76,15 +76,6 @@
     loop_control:
       label: "{{ item.name }}"
 
-  # - name: add hosts
-  #   add_host: 
-  #     name: "{{ item.ip_address }}"
-  #     group: "masters"
-  #   with_items: 
-  #   - "{{ active_droplets }}"
-  #   loop_control:
-  #     label: "{{ item.name }}"
-
   - name: tag each droplet
     digital_ocean_tag:
       api_token: "{{ api_token }}"

@@ -109,7 +109,7 @@
   - name: refresh inventory
     meta: refresh_inventory
 
-- name: Play 02 - Update configuration
+- name: Play 02 - Update hosts configuration
   hosts: masters
   gather_facts: no
   vars:

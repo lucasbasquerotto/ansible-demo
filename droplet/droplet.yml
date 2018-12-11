@@ -3,12 +3,12 @@
   vars_files: 
     - /home/main/env/env.yml
   vars:
+    hosts_file: "/home/main/ansible/hosts"
     api_token: "{{ env.DO_TOKEN }}"
     domain: "{{ env.DOMAIN }}"
     host_user: "{{ env.HOST_USER_NAME }}"
     host_pass: "{{ env.HOST_USER_PASS }}"
     host_ssh_public_key: "{{ env.SSH_PUBLIC_KEY }}"
-    hosts_file: "{{ env.HOSTS_FILE }}"
     host_vars: 
       domain: "{{ domain }}"
       host_user: "{{ host_user }}"
@@ -19,9 +19,10 @@
     - host
     - test-do
     droplets:
-    - { id: '001', name: 'kube-001', state: deleted }
+    - { id: '001', name: 'kube-001', state: present }
     - { id: '002', name: 'kube-002', state: present }
     - { id: '003', name: 'kube-003', state: present }
+    - { id: '004', name: 'kube-004', state: deleted }
   tasks:
   - name: verify if variables are defined
     fail: 
@@ -124,14 +125,14 @@
   tasks:
   - name: retrieve last line of setup.log
     shell: tail -n 1 /var/log/setup.log
-    register: setup_finished
+    register: last_line
 
-  - debug: msg="setup_finished='{{ setup_finished }}'"
+  - name: Update variable last_line
+    set_fact: last_line="{{ last_line.stdout }}"
 
-  - name: Update variable setup_finished
-    set_fact: setup_finished="{{ setup_finished.stdout }}"
+  - debug: msg="last_line='{{ last_line }}'"
     
   - name: verify if the setup was finished successfully
     fail: 
-      msg: "Variable '{{ setup_finished }}' should be equal to 'Setup Finished'"
-    when: setup_finished != "Setup Finished"
+      msg: "Variable '{{ last_line }}' should be equal to 'Setup Finished'"
+    when: last_line != "Setup Finished"

@@ -15,14 +15,15 @@
       host_pass: "{{ host_pass }}"
       host_ssh_public_key: "{{ host_ssh_public_key }}"
     host_user_data: "{{ lookup('template', 'user_data.j2', template_vars=dict(host_vars)) | trim }}"
+    droplet_state: "present"
     do_tags:      
     - host
     - test-do
     droplets:
-    - { id: '001', name: 'kube-001', state: present }
-    - { id: '002', name: 'kube-002', state: present }
-    - { id: '003', name: 'kube-003', state: present }
-    - { id: '004', name: 'kube-004', state: deleted }
+    - { id: '001', name: 'kube-001', state: "{{ droplet_state }}" }
+    - { id: '002', name: 'kube-002', state: "{{ droplet_state }}" }
+    - { id: '003', name: 'kube-003', state: "{{ droplet_state }}" }
+    - { id: '004', name: 'kube-004', state: "deleted" }
   tasks:
   - name: verify if variables are defined
     fail: 

@@ -67,20 +67,23 @@
       label: "{{ item.name }}"
     register: droplet_details
 
-  - debug: msg="IP of droplet {{ item.droplet.name }} is {{ item.droplet.ip_address }}"
+  - name: Define value of active_droplets
+  - set_fact: active_droplets="{{ droplet_details.results | selectattr('droplet') | map(attribute='droplet') | list }}"
+
+  - debug: msg="IP of droplet {{ item.name }} is {{ item.ip_address }}"
     with_items: 
-    - "{{ droplet_details.results }}"
+    - "{{ active_droplets }}"
     loop_control:
-      label: "{{ item.droplet.name }}"
+      label: "{{ item.name }}"
 
   # - name: add hosts
   #   add_host: 
-  #     name: "{{ item.droplet.ip_address }}"
+  #     name: "{{ item.ip_address }}"
   #     group: "masters"
   #   with_items: 
-  #   - "{{ droplet_details.results }}"
+  #   - "{{ active_droplets }}"
   #   loop_control:
-  #     label: "{{ item.droplet.name }}"
+  #     label: "{{ item.name }}"
 
   - name: tag each droplet
     digital_ocean_tag:
@@ -89,7 +92,7 @@
       name: "{{ item[1] }}"
       state: present
     with_nested:
-    - "{{ droplet_details.results }}"
+    - "{{ active_droplets }}"
     - "{{ do_tags }}"
     loop_control:
       label: "droplet: {{ item[0].droplet.name }} - tag: {{ item[1] }}"
@@ -98,11 +101,11 @@
     set_fact: 
       masters: |
         {{ masters | default('') }}
-        {{ item.droplet.name }} ansible_host={{ item.droplet.ip_address }} ansible_user={{ host_user }} ansible_become_pass={{ host_pass }}
+        {{ item.name }} ansible_host={{ item.ip_address }} ansible_user={{ host_user }} ansible_become_pass={{ host_pass }}
     with_items: 
-    - "{{ droplet_details.results }}"
+    - "{{ active_droplets }}"
     loop_control:
-      label: "{{ item.droplet.name }}"
+      label: "{{ item.name }}"
 
   - name: Update the hosts file with the generated hosts
     blockinfile:
@@ -118,12 +121,12 @@
   #   digital_ocean_domain:
   #     api_token: "{{ api_token }}"
   #     state: present
-  #     name: "{{ item.droplet.name }}.internal.{{ domain }}"
-  #     ip: "{{ item.droplet.ip_address }}"
+  #     name: "{{ item.name }}.internal.{{ domain }}"
+  #     ip: "{{ item.ip_address }}"
   #   with_items:
-  #   - "{{ droplet_details.results }}"
+  #   - "{{ active_droplets }}"
   #   loop_control:
-  #     label: "{{ item.droplet.name }}"
+  #     label: "{{ item.name }}"
 
 - name: Play 02 - Update configuration
   hosts: masters

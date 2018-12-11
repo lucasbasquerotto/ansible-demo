@@ -21,8 +21,8 @@
     droplets:
     - { id: '001', name: 'kube-001', state: present }
     - { id: '002', name: 'kube-002', state: present }
-    - { id: '003', name: 'kube-003', state: present }
-    - { id: '004', name: 'kube-004', state: deleted }
+    - { id: '003', name: 'kube-003', state: deleted }
+    - { id: '004', name: 'kube-004', state: present }
   tasks:
   - name: verify if variables are defined
     fail: 
@@ -112,29 +112,49 @@
 - name: Play 02 - Update configuration
   hosts: masters
   gather_facts: no
+  vars:
+    log_file: "/var/log/setup.log"
+    setup_last_line: "Setup Finished"
   tasks:
   - name: Wait 300 seconds for target connection to become reachable/usable
     wait_for_connection:
       connect_timeout: 5
       delay: 0
       sleep: 1
-      timeout: 300
+      timeout: 60
 
   - name: Make sure the file /usr/bin/python is present
     wait_for:
       connect_timeout: 5
       delay: 0
       sleep: 1
-      timeout: 300
+      timeout: 60
       path: /usr/bin/python
       state: present
       msg: Timeout to find file /usr/bin/python
 
-  - name: Gathering facts
-    setup:
+  - name: Make sure the file {{ log_file }} is present
+    wait_for:
+      connect_timeout: 5
+      delay: 0
+      sleep: 1
+      timeout: 10
+      path: "{{ log_file }}"
+      state: present
+      msg: Timeout to find file {{ log_file }}
 
-  - name: retrieve last line of setup.log
-    shell: tail -n 1 /var/log/setup.log
+  - name: Make sure the file {{ log_file }} has {{ setup_last_line }} in it
+    wait_for:
+      connect_timeout: 5
+      delay: 0
+      sleep: 1
+      timeout: 60
+      path: "{{ log_file }}"
+      search_regex: "{{ setup_last_line }}"
+      msg: Timeout to find file {{ log_file }}
+
+  - name: retrieve last line of {{ log_file }}
+    shell: tail -n 1 {{ log_file }}
     register: last_line
 
   - name: Update variable last_line
@@ -144,5 +164,8 @@
     
   - name: verify if the setup was finished successfully
     fail: 
-      msg: "Variable '{{ last_line }}' should be equal to 'Setup Finished'"
-    when: last_line != "Setup Finished"
+      msg: "Variable '{{ last_line }}' should be equal to '{{ setup_last_line }}'"
+    when: last_line != "{{ setup_last_line }}"
+
+  - name: Gathering facts
+    setup:

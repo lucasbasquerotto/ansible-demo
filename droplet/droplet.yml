@@ -88,14 +88,14 @@
   - name: tag each droplet
     digital_ocean_tag:
       api_token: "{{ api_token }}"
-      resource_id: "{{ item[0].droplet.id }}"
+      resource_id: "{{ item[0].id }}"
       name: "{{ item[1] }}"
       state: present
     with_nested:
     - "{{ active_droplets }}"
     - "{{ do_tags }}"
     loop_control:
-      label: "droplet: {{ item[0].droplet.name }} - tag: {{ item[1] }}"
+      label: "droplet: {{ item[0].name }} - tag: {{ item[1] }}"
 
   - name: Generate hosts to populate the hosts file
     set_fact: 

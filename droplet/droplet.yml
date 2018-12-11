@@ -68,7 +68,7 @@
     register: droplet_details
 
   - name: Define value of active_droplets
-    set_fact: active_droplets="{{ droplet_details.results | selectattr('droplet') | map(attribute='droplet') | list }}"
+    set_fact: active_droplets="{{ droplet_details.results | selectattr('droplet', 'defined') | map(attribute='droplet') | list }}"
 
   - debug: msg="IP of droplet {{ item.name }} is {{ item.ip_address }}"
     with_items: 

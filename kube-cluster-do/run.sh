@@ -13,7 +13,7 @@ rm -rf ansible
 git clone "$GIT_REPO"
 mkdir ansible
 shopt -s dotglob
-mv ansible-demo/droplet/* ansible/
+mv ansible-demo/kube-cluster-do/* ansible/
 rm -rf ansible-demo
 
 mkdir -p ~/env

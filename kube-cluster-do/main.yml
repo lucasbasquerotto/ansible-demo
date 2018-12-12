@@ -1,0 +1,151 @@
+- name: Play 01 - Verify if variables are defined
+  hosts: main
+  vars_files: 
+    - /home/main/env/env.yml
+  vars:
+    hosts_file: "/home/main/ansible/hosts"
+    droplet_state: "present"
+    api_token: "{{ env.DO_TOKEN }}"
+    host_user: "{{ env.HOST_USER_NAME }}"
+    host_pass: "{{ env.HOST_USER_PASS }}"
+    host_ssh_public_key: "{{ env.SSH_PUBLIC_KEY }}"
+    host_vars: 
+      host_user: "{{ host_user }}"
+      host_pass: "{{ host_pass }}"
+      host_ssh_public_key: "{{ host_ssh_public_key }}"
+    main_region_id: nyc1
+    main_droplet_info:
+      image_id: ubuntu-18-04-x64
+      size_id: 1gb
+      private_networking: yes
+      ipv6: yes
+      wait_timeout: 500
+    master_user_data: "{{ lookup('template', 'user_data.master.j2', template_vars=dict(host_vars)) | trim }}"
+    worker_user_data: "{{ lookup('template', 'user_data.worker.j2', template_vars=dict(host_vars)) | trim }}"
+    masters:
+      hosts_group: 'masters'
+      hosts_file: "{{ hosts_file }}"
+      api_token: "{{ api_token }}"
+      host_user: "{{ host_user }}"
+      host_pass: "{{ host_pass }}"
+      droplet_info:
+        image_id: "{{ main_droplet_info.image_id }}"
+        size_id: "{{ main_droplet_info.size_id }}"
+        private_networking: "{{ main_droplet_info.private_networking }}"
+        ipv6: "{{ main_droplet_info.ipv6 }}"
+        wait_timeout: "{{ main_droplet_info.wait_timeout }}"
+        user_data: "{{ master_user_data }}"
+      do_tags:      
+      - host
+      - kube
+      droplets:
+      - { name: 'kube-001', region_id: "{{ main_region_id }}", state: "{{ droplet_state }}" }
+    workers:
+      hosts_group: 'workers'
+      hosts_file: "{{ hosts_file }}"
+      api_token: "{{ api_token }}"
+      host_user: "{{ host_user }}"
+      host_pass: "{{ host_pass }}"
+      droplet_info:
+        image_id: "{{ main_droplet_info.image_id }}"
+        size_id: "{{ main_droplet_info.size_id }}"
+        private_networking: "{{ main_droplet_info.private_networking }}"
+        ipv6: "{{ main_droplet_info.ipv6 }}"
+        wait_timeout: "{{ main_droplet_info.wait_timeout }}"
+        user_data: "{{ worker_user_data }}"
+      do_tags:      
+      - host
+      - worker
+      droplets:
+      - { name: 'worker-001', region_id: "{{ main_region_id }}", state: "{{ droplet_state }}" }
+      - { name: 'worker-002', region_id: "{{ main_region_id }}", state: "{{ droplet_state }}" }
+      - { name: 'worker-003', region_id: "{{ main_region_id }}", state: "{{ droplet_state }}" }
+  roles:
+  - role: validation
+  - api_token: "{{ api_token }}"
+  - host_user: "{{ host_user }}"
+  - host_pass: "{{ host_pass }}"
+  - host_ssh_public_key: "{{ host_ssh_public_key }}"
+  - master_user_data: "{{ master_user_data }}"
+  - worker_user_data: "{{ worker_user_data }}"
+  
+  - role: droplets
+    hosts_file: "{{ masters.hosts_file }}"
+    api_token: "{{ masters.api_token }}"
+    host_user: "{{ masters.host_user }}"
+    host_pass: "{{ masters.host_pass }}"
+    hosts_group: "{{ masters.hosts_group }}"
+    droplet_info: "{{ masters.droplet_info }}"
+    do_tags: "{{ masters.do_tags }}"
+    droplets: "{{ masters.droplets }}"
+  
+  - role: droplets
+    hosts_file: "{{ workers.hosts_file }}"
+    api_token: "{{ workers.api_token }}"
+    host_user: "{{ workers.host_user }}"
+    host_pass: "{{ workers.host_pass }}"
+    hosts_group: "{{ workers.hosts_group }}"
+    droplet_info: "{{ workers.droplet_info }}"
+    do_tags: "{{ workers.do_tags }}"
+    droplets: "{{ workers.droplets }}"
+
+- name: Play 03 - Update hosts configuration
+  hosts: masters
+  gather_facts: no
+  vars:
+    log_file: "/var/log/setup.log"
+    setup_last_line: "Setup Finished"
+  tasks:
+  - name: Wait 60 seconds for target connection to become reachable/usable
+    wait_for_connection:
+      connect_timeout: 5
+      delay: 0
+      sleep: 1
+      timeout: 60
+
+  - name: Gathering facts
+    setup:
+
+  - name: Make sure the file /usr/bin/python is present
+    wait_for:
+      connect_timeout: 5
+      delay: 0
+      sleep: 1
+      timeout: 60
+      path: /usr/bin/python
+      state: present
+      msg: Timeout to find file /usr/bin/python
+
+  - name: Make sure the file {{ log_file }} is present
+    wait_for:
+      connect_timeout: 5
+      delay: 0
+      sleep: 1
+      timeout: 10
+      path: "{{ log_file }}"
+      state: present
+      msg: Timeout to find file {{ log_file }}
+
+  - name: Make sure the file {{ log_file }} has "{{ setup_last_line }}" in it
+    wait_for:
+      connect_timeout: 5
+      delay: 0
+      sleep: 1
+      timeout: 60
+      path: "{{ log_file }}"
+      search_regex: "{{ setup_last_line }}"
+      msg: Timeout to find "{{ setup_last_line }}" inside file {{ log_file }}
+
+  - name: retrieve last line of {{ log_file }}
+    shell: tail -n 1 {{ log_file }}
+    register: last_line
+
+  - name: Update variable last_line
+    set_fact: last_line="{{ last_line.stdout }}"
+
+  - debug: msg="last_line='{{ last_line }}'"
+    
+  - name: verify if the setup was finished successfully
+    fail: 
+      msg: "Variable '{{ last_line }}' should be equal to '{{ setup_last_line }}'"
+    when: last_line != setup_last_line

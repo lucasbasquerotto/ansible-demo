@@ -1,20 +1,35 @@
-- name: Play 01 - Create droplets and define hosts
+- name: Play 01 - Verify if variables are defined
   hosts: main
   vars_files: 
     - /home/main/env/env.yml
   vars:
-    hosts_file: "/home/main/ansible/hosts"
     api_token: "{{ env.DO_TOKEN }}"
-    domain: "{{ env.DOMAIN }}"
     host_user: "{{ env.HOST_USER_NAME }}"
     host_pass: "{{ env.HOST_USER_PASS }}"
     host_ssh_public_key: "{{ env.SSH_PUBLIC_KEY }}"
     host_vars: 
-      domain: "{{ domain }}"
       host_user: "{{ host_user }}"
       host_pass: "{{ host_pass }}"
       host_ssh_public_key: "{{ host_ssh_public_key }}"
     host_user_data: "{{ lookup('template', 'user_data.j2', template_vars=dict(host_vars)) | trim }}"
+  tasks:
+  - name: verify if variables are defined
+    fail: 
+      msg: "Variable '{{ item.name }}' is not defined"
+    when: item.value is undefined or item.value == ""
+    with_items:
+    - { name: "api_token", value: "{{ api_token }}"}
+    - { name: "host_user", value: "{{ host_user }}"}
+    - { name: "host_pass", value: "{{ host_pass }}"}
+    - { name: "host_ssh_public_key", value: "{{ host_ssh_public_key }}"}
+    - { name: "host_user_data", value: "{{ host_user_data }}"}
+    loop_control:
+      label: "{{ item.name }}"
+
+- name: Play 02 - Create droplets and define hosts
+  hosts: main
+  vars:
+    hosts_file: "/home/main/ansible/hosts"
     droplet_state: "present"
     do_tags:      
     - host
@@ -24,22 +39,7 @@
     - { id: '002', name: 'kube-002', state: "{{ droplet_state }}" }
     - { id: '003', name: 'kube-003', state: "{{ droplet_state }}" }
     - { id: '004', name: 'kube-004', state: "deleted" }
-  tasks:
-  - name: verify if variables are defined
-    fail: 
-      msg: "Variable '{{ item.name }}' is not defined"
-    when: item.value is undefined or item.value == ""
-    with_items:
-    - { name: "api_token", value: "{{ api_token }}"}
-    - { name: "domain", value: "{{ domain }}"}
-    - { name: "host_user", value: "{{ host_user }}"}
-    - { name: "host_pass", value: "{{ host_pass }}"}
-    - { name: "host_user", value: "{{ host_user }}"}
-    - { name: "host_ssh_public_key", value: "{{ host_ssh_public_key }}"}
-    - { name: "host_user_data", value: "{{ host_user_data }}"}
-    loop_control:
-      label: "{{ item.name }}"
-      
+  tasks:      
   - name: create tags
     digital_ocean_tag:
       api_token: "{{ api_token }}"
@@ -93,7 +93,7 @@
   - name: Generate hosts to populate the hosts file
     set_fact: 
       masters: |
-        {{ masters | default('') }}
+        {{ masters | default(lookup('pipe', 'date +%Y-%m-%d-%H-%M-%S')) }}
         {{ item.name }} ansible_host={{ item.ip_address }} ansible_user={{ host_user }} ansible_become_pass={{ host_pass }}
     with_items: 
     - "{{ active_droplets }}"
@@ -110,7 +110,7 @@
   - name: refresh inventory
     meta: refresh_inventory
 
-- name: Play 02 - Update hosts configuration
+- name: Play 03 - Update hosts configuration
   hosts: masters
   gather_facts: no
   vars:

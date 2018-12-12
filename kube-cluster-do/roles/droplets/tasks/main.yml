@@ -1,0 +1,91 @@
+# vars:
+# - hosts_file
+# - api_token
+# - host_user
+# - host_pass
+# - hosts_group
+# - droplet_info
+# - do_tags
+# - droplets
+
+# - hosts_file
+# Ex: "/etc/ansible/hosts"
+# - host_user: Name of the user in the remote droplet-> 
+# Ex: "host"
+# - hosts_group
+# Ex: "workers"
+# - do_tags
+# Ex: ["host", "worker", ...]
+# - droplets
+# Ex: [{ name: 'server-001', region_id: 'nyc1', state: "present" }, ...]
+# - droplet_info
+# Ex: { size_id: '1gb', image_id: 'ubuntu-18-04-x64', private_networking: 'yes', ipv6: 'yes', user_data: '...', wait_timeout: 500 }
+
+- name: create tags
+  digital_ocean_tag:
+    api_token: "{{ api_token }}"
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - "{{ do_tags }}"
+
+- name: create droplets
+  digital_ocean:
+    api_token: "{{ api_token }}"
+    name: "{{ item.name }}"
+    unique_name: yes
+    state: "{{ item.state }}"
+    command: droplet
+    size_id: "{{ droplet_info.size_id }}"
+    region_id: "{{ droplet_info.region_id }}"
+    image_id: "{{ droplet_info.image_id }}"
+    private_networking: "{{ droplet_info.private_networking }}"
+    ipv6: "{{ droplet_info.ipv6 }}"
+    user_data: "{{ droplet_info.user_data }}"
+    wait_timeout: "{{ droplet_info.wait_timeout }}"
+  with_items:
+  - "{{ droplets }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: droplets_details
+
+- name: Define value of active_droplets
+  set_fact: active_droplets="{{ droplets_details.results | selectattr('droplet', 'defined') | map(attribute='droplet') | list }}"
+
+- debug: msg="IP of droplet {{ item.name }} is {{ item.ip_address }}"
+  with_items: 
+  - "{{ active_droplets }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: tag each droplet
+  digital_ocean_tag:
+    api_token: "{{ api_token }}"
+    resource_id: "{{ item[0].id }}"
+    name: "{{ item[1] }}"
+    state: present
+  with_nested:
+  - "{{ active_droplets }}"
+  - "{{ do_tags }}"
+  loop_control:
+    label: "droplet: {{ item[0].name }} - tag: {{ item[1] }}"
+
+- name: generate the hosts information with the droplets ips
+  set_fact: 
+    hosts_info: |
+      {{ hosts_info | default(lookup('pipe', 'date +%Y-%m-%d-%H-%M-%S')) }}
+      {{ item.name }} ansible_host={{ item.ip_address }} ansible_user={{ host_user }} ansible_become_pass={{ host_pass }}
+  with_items: 
+  - "{{ active_droplets }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Update the hosts file with the generated hosts
+  blockinfile:
+    path: "{{ hosts_file }}"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - {{ hosts_group }}"
+    insertafter: "[{{ hosts_group }}]"
+    block: "{{ hosts_info }}"
+
+- name: refresh inventory
+  meta: refresh_inventory

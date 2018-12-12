@@ -1,0 +1,21 @@
+# vars:
+# - api_token
+# - host_user
+# - host_pass
+# - host_ssh_public_key
+# - master_user_data
+# - worker_user_data
+
+- name: verify if variables are defined
+  fail: 
+    msg: "Variable '{{ item.name }}' is not defined"
+  when: item.value is undefined or item.value == ""
+  with_items:
+  - { name: "api_token", value: "{{ api_token }}" }
+  - { name: "host_user", value: "{{ host_user }}" }
+  - { name: "host_pass", value: "{{ host_pass }}" }
+  - { name: "host_ssh_public_key", value: "{{ host_ssh_public_key }}" }
+  - { name: "master_user_data", value: "{{ master_user_data }}" }
+  - { name: "worker_user_data", value: "{{ worker_user_data }}" }
+  loop_control:
+    label: "{{ item.name }}"

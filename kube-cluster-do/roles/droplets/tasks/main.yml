@@ -31,13 +31,13 @@
 
 - name: create droplets
   digital_ocean:
+    unique_name: yes
     api_token: "{{ api_token }}"
     name: "{{ item.name }}"
-    unique_name: yes
     state: "{{ item.state }}"
+    region_id: "{{ item.region_id }}"
     command: droplet
     size_id: "{{ droplet_info.size_id }}"
-    region_id: "{{ droplet_info.region_id }}"
     image_id: "{{ droplet_info.image_id }}"
     private_networking: "{{ droplet_info.private_networking }}"
     ipv6: "{{ droplet_info.ipv6 }}"

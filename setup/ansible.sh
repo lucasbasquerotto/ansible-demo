@@ -180,7 +180,7 @@ chown --recursive "${USERNAME}":"${USERNAME}" "/home/$USERNAME/.ssh"
 
 echo "Ansible Installed" >> "/var/log/setup.log"
 
-apt-get install -y python-pip
+apt install -y python-pip
 
 echo "Setup Finished" >> "/var/log/setup.log"
 

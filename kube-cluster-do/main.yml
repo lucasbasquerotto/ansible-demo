@@ -3,7 +3,7 @@
   vars_files: 
     - /home/main/env/env.yml
   vars:
-    general:
+    main:
       hosts_file: "/home/main/ansible/hosts"
       log_file: "/var/log/setup.log"
       setup_last_line: "Setup Finished"

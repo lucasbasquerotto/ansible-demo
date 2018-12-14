@@ -1,5 +1,5 @@
 - name: Play 01 - Define variables
-  hosts: main
+  hosts: all
   vars_files: 
     - /home/main/env/env.yml
   vars:

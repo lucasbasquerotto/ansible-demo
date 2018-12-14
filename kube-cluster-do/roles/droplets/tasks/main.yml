@@ -73,7 +73,7 @@
 - name: generate the hosts information with the droplets ips
   set_fact: 
     hosts_info: |
-      {{ hosts_info | default('') }}
+      {{ hosts_info | default('lookup('pipe', 'date +%Y-%m-%d-%H-%M-%S')') }}
       {{ item.name }} ansible_host={{ item.ip_address }} ansible_user={{ host_user }} ansible_become_pass={{ host_pass }}
   with_items: 
   - "{{ active_droplets }}"
@@ -83,8 +83,8 @@
 - name: Update the hosts file with the generated hosts
   blockinfile:
     path: "{{ hosts_file }}"
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - {{ hosts_group }}"
-    insertafter: "[{{ hosts_group }}]"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - masters"
+    insertafter: "[masters]"
     block: "{{ hosts_info }}"
 
 - name: refresh inventory

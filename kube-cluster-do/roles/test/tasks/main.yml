@@ -4,7 +4,7 @@
 #   initial_connection_timeout -> Ex: 60
 #   setup_finished_timeout -> Ex: 60
 
-- name: Wait 60 seconds for target connection to become reachable/usable
+- name: Wait {{ initial_connection_timeout }} seconds for target connection to become reachable/usable
   wait_for_connection:
     delay: 0
     sleep: 1

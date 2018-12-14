@@ -120,6 +120,7 @@
 
 - name: Play 04 - Update masters configuration
   hosts: masters
+  gather_facts: no
   vars:
     main: "{{ play_vars.main }}"
   roles:

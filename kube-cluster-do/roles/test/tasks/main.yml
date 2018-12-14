@@ -13,7 +13,7 @@
 - name: Gathering facts
   setup:
 
-  debug: msg="{{ initial_connection_timeout }} - {{ log_file }} - {{ setup_last_line }} - {{ setup_finished_timeout }}"
+- debug: msg="{{ initial_connection_timeout }} - {{ log_file }} - {{ setup_last_line }} - {{ setup_finished_timeout }}"
 
 # - name: Make sure the file {{ log_file }} is present
 #   wait_for:

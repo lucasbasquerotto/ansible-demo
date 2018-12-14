@@ -83,7 +83,7 @@
 - name: Update the hosts file with the generated hosts
   blockinfile:
     path: "{{ hosts_file }}"
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - masters"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - {{ hosts_group }}"
     insertafter: "[masters]"
     block: "{{ hosts_info }}"
 

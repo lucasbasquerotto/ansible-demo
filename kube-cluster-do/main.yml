@@ -1,4 +1,4 @@
-- name: Play 01 - Verify if variables are defined
+- name: Play 01 - Define variables
   hosts: main
   vars_files: 
     - /home/main/env/env.yml
@@ -73,7 +73,7 @@
 
 ###############################################################################
 
-- name: Play 02 - Update hosts configuration
+- name: Play 02 - Verify if variables are defined
   hosts: main
   vars:
     main: "{{ play_vars.main }}"

@@ -66,7 +66,7 @@
       - { name: 'worker-003', region_id: "{{ main.main_region_id }}", state: "{{ main.droplet_state }}" }
   tasks:
   - set_fact:
-      global:
+      play_vars:
         main: "{{ main }}"
         masters: "{{ masters }}"
         workers: "{{ workers }}"
@@ -76,9 +76,9 @@
 - name: Play 02 - Update hosts configuration
   hosts: main
   vars:
-    main: "{{ global.main }}"
-    masters: "{{ global.masters }}"
-    workers: "{{ global.workers }}"
+    main: "{{ play_vars.main }}"
+    masters: "{{ play_vars.masters }}"
+    workers: "{{ play_vars.workers }}"
   roles:  
   - role: validation
     api_token: "{{ main.api_token }}"
@@ -93,8 +93,8 @@
 - name: Play 03 - Update hosts configuration
   hosts: main
   vars:
-    masters: "{{ global.masters }}"
-    workers: "{{ global.workers }}"
+    masters: "{{ play_vars.masters }}"
+    workers: "{{ play_vars.workers }}"
   roles:  
   - role: droplets
     hosts_file: "{{ masters.hosts_file }}"
@@ -121,7 +121,7 @@
 - name: Play 04 - Update masters configuration
   hosts: masters
   vars:
-    main: "{{ global.main }}"
+    main: "{{ play_vars.main }}"
   roles:
   - role: test
     log_file: "{{ main.log_file }}"

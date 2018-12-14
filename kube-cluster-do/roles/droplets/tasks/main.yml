@@ -84,7 +84,7 @@
   blockinfile:
     path: "{{ hosts_file }}"
     marker: "# {mark} ANSIBLE MANAGED BLOCK - {{ hosts_group }}"
-    insertafter: "[\[]{{ hosts_group }}[\]]"
+    insertafter: "[\\[]{{ hosts_group }}[\\]]"
     block: "{{ hosts_info }}"
 
 - name: refresh inventory

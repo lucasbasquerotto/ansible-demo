@@ -13,6 +13,7 @@
       setup_last_line: "{{ env.SETUP_LAST_LINE }}"
       initial_connection_timeout: "{{ env.INITIAL_CONNECTION_TIMEOUT }}"
       setup_finished_timeout: "{{ env.SETUP_FINISHED_TIMEOUT }}"
+      kube_network_file: "{{ env.KUBE_NETWORK_FILE }}"
       master_droplet_info: "{{ env.MASTER_DROPLET_INFO }}" 
       worker_droplet_info: "{{ env.WORKER_DROPLET_INFO }}" 
       master_droplets: "{{ env.MASTER_DROPLETS }}"
@@ -84,6 +85,7 @@
     setup_last_line: "{{ main.setup_last_line }}"
     initial_connection_timeout: "{{ main.initial_connection_timeout }}"
     setup_finished_timeout: "{{ main.setup_finished_timeout }}"
+    kube_network_file: "{{ main.kube_network_file }}"
     master_droplet_info: "{{ main.master_droplet_info }}" 
     worker_droplet_info: "{{ main.worker_droplet_info }}" 
     master_droplets: "{{ main.master_droplets }}"
@@ -171,6 +173,8 @@
   vars:
     main:
       host_user: "{{ env.HOST_USER_NAME }}"
+      kube_network_file: "{{ env.KUBE_NETWORK_FILE }}"
   roles:
   - role: kube-run
     host_user: "{{ main.host_user }}"
+    kube_network_file: "{{ main.kube_network_file }}"

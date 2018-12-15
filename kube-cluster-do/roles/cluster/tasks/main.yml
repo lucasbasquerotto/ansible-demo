@@ -1,4 +1,4 @@
-- name: check file "/home/{{host_user}}/.kube/config" exists
+- name: check file "/home/{{ host_user }}/.kube/config" exists
   stat:
     path: /etc/issue
   register: tmp_file
@@ -8,7 +8,7 @@
   
 - name: initialize the cluster
   become: yes
-  become_user: "{{host_user}}"
+  become_user: "{{ host_user }}"
   shell: kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=NumCPU >> cluster_initialized.txt
   args:
     chdir: $HOME
@@ -17,7 +17,7 @@
 
 - name: create .kube directory
   become: yes
-  become_user: "{{host_user}}"
+  become_user: "{{ host_user }}"
   file:
     path: $HOME/.kube
     state: directory
@@ -27,15 +27,23 @@
 - name: copy admin.conf to user's kube config
   copy:
     src: /etc/kubernetes/admin.conf
-    dest: "/home/{{host_user}}/.kube/config"
+    dest: "/home/{{ host_user }}/.kube/config"
     remote_src: yes
-    owner: "{{host_user}}"
+    owner: "{{ host_user }}"
   when: run_tasks
+
+- name: copy local file "data/{{ kube_network_file }}" to host
+  copy:
+    src: "data/{{ kube_network_file }}"
+    dest: "/home/{{ host_user }}/tmp/{{ kube_network_file }}"
+    mode: 0644
+    owner: "{{ host_user }}"
 
 - name: install Pod network
   become: yes
-  become_user: "{{host_user}}"
-  shell: kubectl apply --filename https://git.io/weave-kube-1.6 >> pod_network_setup.txt
+  become_user: "{{ host_user }}"
+  shell: kubectl apply --filename "/home/{{ host_user }}/tmp/{{ kube_network_file }}" >> pod_network_setup.txt
+  #shell: kubectl apply --filename https://git.io/weave-kube-1.6 >> pod_network_setup.txt
   #shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml >> pod_network_setup.txt
   args:
     chdir: $HOME

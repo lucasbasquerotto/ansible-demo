@@ -160,3 +160,17 @@
   
   - role: kube-run
     host_user: "{{ main.host_user }}"
+
+###############################################################################
+
+- name: Play 06 - Join the cluster
+  hosts: workers
+  become: true
+  vars_files: 
+    - /home/main/env/env.yml
+  vars:
+    main:
+      host_user: "{{ env.HOST_USER_NAME }}"
+  roles:
+  - role: kube-run
+    host_user: "{{ main.host_user }}"

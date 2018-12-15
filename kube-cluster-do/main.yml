@@ -159,3 +159,4 @@
     host_user: "{{ main.host_user }}"
   
   - role: kube-run
+    host_user: "{{ main.host_user }}"

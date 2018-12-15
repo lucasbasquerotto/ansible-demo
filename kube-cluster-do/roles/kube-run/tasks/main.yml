@@ -1,4 +1,6 @@
 - name: get join command
+  become: yes
+  become_user: "{{host_user}}"
   shell: kubeadm token create --print-join-command
   register: join_command_raw
   when: "'masters' in group_names"

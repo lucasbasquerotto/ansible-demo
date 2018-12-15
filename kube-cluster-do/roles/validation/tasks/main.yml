@@ -3,6 +3,15 @@
 # - host_user
 # - host_pass
 # - host_ssh_public_key
+# - hosts_file
+# - log_file
+# - setup_last_line
+# - initial_connection_timeout
+# - setup_finished_timeout
+# - master_droplet_info
+# - worker_droplet_info
+# - master_droplets
+# - worker_droplets
 # - master_user_data
 # - worker_user_data
 
@@ -15,6 +24,15 @@
   - { name: "host_user", value: "{{ host_user }}" }
   - { name: "host_pass", value: "{{ host_pass }}" }
   - { name: "host_ssh_public_key", value: "{{ host_ssh_public_key }}" }
+  - { name: "hosts_file", value: "{{ hosts_file }}" }
+  - { name: "log_file", value: "{{ log_file }}" }
+  - { name: "setup_last_line", value: "{{ setup_last_line }}" }
+  - { name: "initial_connection_timeout", value: "{{ initial_connection_timeout }}" }
+  - { name: "setup_finished_timeout", value: "{{ setup_finished_timeout }}" }
+  - { name: "master_droplet_info", value: "{{ master_droplet_info }}" }
+  - { name: "worker_droplet_info", value: "{{ worker_droplet_info }}" }
+  - { name: "master_droplets", value: "{{ master_droplets }}" }
+  - { name: "worker_droplets", value: "{{ worker_droplets }}" }
   - { name: "master_user_data", value: "{{ master_user_data }}" }
   - { name: "worker_user_data", value: "{{ worker_user_data }}" }
   loop_control:

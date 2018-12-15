@@ -4,31 +4,26 @@
     - /home/main/env/env.yml
   vars:
     main:
-      hosts_file: "/home/main/ansible/hosts"
-      log_file: "/var/log/setup.log"
-      setup_last_line: "Setup Finished"
-      initial_connection_timeout: 60
-      setup_finished_timeout: 60
-      # droplet_state: "present"
-      droplet_state: "deleted"
       api_token: "{{ env.DO_TOKEN }}"
       host_user: "{{ env.HOST_USER_NAME }}"
       host_pass: "{{ env.HOST_USER_PASS }}"
       host_ssh_public_key: "{{ env.SSH_PUBLIC_KEY }}"
-      main_region_id: nyc1
-      main_droplet_info:
-        image_id: ubuntu-18-04-x64
-        size_id: 1gb
-        private_networking: yes
-        ipv6: yes
-        wait_timeout: 500    
+      hosts_file: "{{ env.HOSTS_FILE }}"
+      log_file: "{{ env.LOG_FILE }}"
+      setup_last_line: "{{ env.SETUP_LAST_LINE }}"
+      initial_connection_timeout: "{{ env.INITIAL_CONNECTION_TIMEOUT }}"
+      setup_finished_timeout: "{{ env.SETUP_FINISHED_TIMEOUT }}"
+      master_droplet_info: "{{ env.MASTER_DROPLET_INFO }}" 
+      worker_droplet_info: "{{ env.WORKER_DROPLET_INFO }}" 
+      master_droplets: "{{ env.MASTER_DROPLETS }}"
+      worker_droplets: "{{ env.WORKER_DROPLETS }}"
     main_host_vars: 
       host_user: "{{ main.host_user }}"
       host_pass: "{{ main.host_pass }}"
       host_ssh_public_key: "{{ main.host_ssh_public_key }}"
     main_aux:  
-      master_user_data: "{{ lookup('template', 'user_data.master.j2', template_vars=dict(main_host_vars)) | trim }}"
-      worker_user_data: "{{ lookup('template', 'user_data.worker.j2', template_vars=dict(main_host_vars)) | trim }}"
+      master_user_data: "{{ lookup('template', 'data/user_data.master.j2', template_vars=dict(main_host_vars)) | trim }}"
+      worker_user_data: "{{ lookup('template', 'data/user_data.worker.j2', template_vars=dict(main_host_vars)) | trim }}"
     masters:
       hosts_group: 'masters'
       hosts_file: "{{ main.hosts_file }}"
@@ -36,17 +31,16 @@
       host_user: "{{ main.host_user }}"
       host_pass: "{{ main.host_pass }}"
       droplet_info:
-        image_id: "{{ main.main_droplet_info.image_id }}"
-        size_id: "{{ main.main_droplet_info.size_id }}"
-        private_networking: "{{ main.main_droplet_info.private_networking }}"
-        ipv6: "{{ main.main_droplet_info.ipv6 }}"
-        wait_timeout: "{{ main.main_droplet_info.wait_timeout }}"
+        image_id: "{{ main.master_droplet_info.image_id }}"
+        size_id: "{{ main.master_droplet_info.size_id }}"
+        private_networking: "{{ main.master_droplet_info.private_networking }}"
+        ipv6: "{{ main.master_droplet_info.ipv6 }}"
+        wait_timeout: "{{ main.master_droplet_info.wait_timeout }}"
         user_data: "{{ main_aux.master_user_data }}"
       do_tags:      
       - host
       - kube
-      droplets:
-      - { name: 'kube-001', region_id: "{{ main.main_region_id }}", state: "{{ main.droplet_state }}" }
+      droplets: "{{ main.master_droplets }}"
     workers:
       hosts_group: 'workers'
       hosts_file: "{{ main.hosts_file }}"
@@ -54,19 +48,16 @@
       host_user: "{{ main.host_user }}"
       host_pass: "{{ main.host_pass }}"
       droplet_info:
-        image_id: "{{ main.main_droplet_info.image_id }}"
-        size_id: "{{ main.main_droplet_info.size_id }}"
-        private_networking: "{{ main.main_droplet_info.private_networking }}"
-        ipv6: "{{ main.main_droplet_info.ipv6 }}"
-        wait_timeout: "{{ main.main_droplet_info.wait_timeout }}"
+        image_id: "{{ main.worker_droplet_info.image_id }}"
+        size_id: "{{ main.worker_droplet_info.size_id }}"
+        private_networking: "{{ main.worker_droplet_info.private_networking }}"
+        ipv6: "{{ main.worker_droplet_info.ipv6 }}"
+        wait_timeout: "{{ main.worker_droplet_info.wait_timeout }}"
         user_data: "{{ main_aux.worker_user_data }}"
       do_tags:      
       - host
       - worker
-      droplets:
-      - { name: 'worker-001', region_id: "{{ main.main_region_id }}", state: "{{ main.droplet_state }}" }
-      - { name: 'worker-002', region_id: "{{ main.main_region_id }}", state: "{{ main.droplet_state }}" }
-      - { name: 'worker-003', region_id: "{{ main.main_region_id }}", state: "{{ main.droplet_state }}" }
+      droplets: "{{ main.master_droplets }}"
   tasks:
   - set_fact:
       play_vars:
@@ -88,6 +79,15 @@
     host_user: "{{ main.host_user }}"
     host_pass: "{{ main.host_pass }}"
     host_ssh_public_key: "{{ main.host_ssh_public_key }}"
+    hosts_file: "{{ main.hosts_file }}"
+    log_file: "{{ main.log_file }}"
+    setup_last_line: "{{ main.setup_last_line }}"
+    initial_connection_timeout: "{{ main.initial_connection_timeout }}"
+    setup_finished_timeout: "{{ main.setup_finished_timeout }}"
+    master_droplet_info: "{{ main.master_droplet_info }}" 
+    worker_droplet_info: "{{ main.worker_droplet_info }}" 
+    master_droplets: "{{ main.master_droplets }}"
+    worker_droplets: "{{ main.worker_droplets }}"
     master_user_data: "{{ masters.droplet_info.user_data }}"
     worker_user_data: "{{ workers.droplet_info.user_data }}"
 
@@ -121,40 +121,33 @@
 
 ###############################################################################
 
-- name: Play 04 - Update masters configuration
-  hosts: masters
+- name: Play 04 - Update hosts configuration
+  hosts: masters:workers
   gather_facts: no
+  vars_files: 
+    - /home/main/env/env.yml
   vars:
-    # main_play_vars: hostvars[groups['main'][0]].play_vars
-    # main: "{{ main_play_vars.main }}"
     main:
-      log_file: "/var/log/setup.log"
-      setup_last_line: "Setup Finished"
-      initial_connection_timeout: 60
-      setup_finished_timeout: 60
+      log_file: "{{ env.LOG_FILE }}"
+      setup_last_line: "{{ env.SETUP_LAST_LINE }}"
+      initial_connection_timeout: "{{ env.INITIAL_CONNECTION_TIMEOUT }}"
+      setup_finished_timeout: "{{ env.SETUP_FINISHED_TIMEOUT }}"
   roles:
   - role: test
     log_file: "{{ main.log_file }}"
     setup_last_line: "{{ main.setup_last_line }}"
     initial_connection_timeout: "{{ main.initial_connection_timeout }}"
     setup_finished_timeout: "{{ main.setup_finished_timeout }}"
+
+  - role: docker
+
+  - role: kube
 
 ###############################################################################
 
-- name: Play 05 - Update workers configuration
-  hosts: workers
-  gather_facts: no
-  vars:
-    # main_play_vars: hostvars[groups['main'][0]].play_vars
-    # main: "{{ main_play_vars.main }}"
-    main:
-      log_file: "/var/log/setup.log"
-      setup_last_line: "Setup Finished"
-      initial_connection_timeout: 60
-      setup_finished_timeout: 60
+- name: Play 05 - Prepare the cluster
+  hosts: masters
   roles:
-  - role: test
-    log_file: "{{ main.log_file }}"
-    setup_last_line: "{{ main.setup_last_line }}"
-    initial_connection_timeout: "{{ main.initial_connection_timeout }}"
-    setup_finished_timeout: "{{ main.setup_finished_timeout }}"
+  - role: cluster
+  
+  - role: kube-run

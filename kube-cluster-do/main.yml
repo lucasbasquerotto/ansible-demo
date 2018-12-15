@@ -57,7 +57,7 @@
       do_tags:      
       - host
       - worker
-      droplets: "{{ main.master_droplets }}"
+      droplets: "{{ main.workers_droplets }}"
   tasks:
   - set_fact:
       play_vars:
@@ -124,6 +124,7 @@
 - name: Play 04 - Update hosts configuration
   hosts: masters:workers
   gather_facts: no
+  become: true
   vars_files: 
     - /home/main/env/env.yml
   vars:

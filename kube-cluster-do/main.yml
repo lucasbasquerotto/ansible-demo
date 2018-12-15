@@ -156,9 +156,11 @@
   vars:
     main:
       host_user: "{{ env.HOST_USER_NAME }}"
+      kube_network_file: "{{ env.KUBE_NETWORK_FILE }}"
   roles:
   - role: cluster
     host_user: "{{ main.host_user }}"
+    kube_network_file: "{{ main.kube_network_file }}"
   
   - role: kube-run
     host_user: "{{ main.host_user }}"
@@ -173,8 +175,6 @@
   vars:
     main:
       host_user: "{{ env.HOST_USER_NAME }}"
-      kube_network_file: "{{ env.KUBE_NETWORK_FILE }}"
   roles:
   - role: kube-run
     host_user: "{{ main.host_user }}"
-    kube_network_file: "{{ main.kube_network_file }}"

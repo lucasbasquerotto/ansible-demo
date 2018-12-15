@@ -9,11 +9,11 @@
   when: "'masters' in group_names"
 
 - name: TCP port 6443 on master is reachable from worker
-  wait_for: "host={{ hostvars[groups["masters"][0]]['ansible_default_ipv4']['address'] }} port=6443 timeout=1"
+  wait_for: "host={{ hostvars[groups['masters'][0]]['ansible_default_ipv4']['address'] }} port=6443 timeout=1"
   when: "'workers' in group_names"
 
 - name: join cluster
-  shell: "{{ hostvars[groups["masters"][0]].join_command }} >> node_joined.txt"
+  shell: "{{ hostvars[groups['masters'][0]].join_command }} >> node_joined.txt"
   args:
     chdir: $HOME
     creates: node_joined.txt

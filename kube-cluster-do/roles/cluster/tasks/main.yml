@@ -32,13 +32,6 @@
     owner: "{{host_user}}"
   when: run_tasks
 
-- name: copy admin.conf to root's kube config
-  copy:
-    src: "/home/{{host_user}}/.kube/config"
-    dest: "/root/.kube/config"
-    remote_src: yes
-    owner: "root"
-
 - name: install Pod network
   become: yes
   become_user: "{{host_user}}"

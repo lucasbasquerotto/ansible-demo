@@ -12,7 +12,7 @@
       - ca-certificates
       - curl
       - software-properties-common
-      - docker-ce=18.03.1~ce-0~ubuntu
+      - docker-ce=18.03.1~ce~3-0~ubuntu
     state: present
     update_cache: yes
     autoclean: yes

@@ -122,8 +122,11 @@
   hosts: masters
   gather_facts: no
   vars:
-    main_play_vars: hostvars[groups['main'][0]].play_vars
-    main: "{{ main_play_vars.main }}"
+    # main_play_vars: hostvars[groups['main'][0]].play_vars
+    # main: "{{ main_play_vars.main }}"
+    main:
+      hosts_file: "/home/main/ansible/hosts"
+      log_file: "/var/log/setup.log"
   roles:
   - role: test
     log_file: "{{ main.log_file }}"

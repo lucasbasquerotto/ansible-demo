@@ -9,7 +9,8 @@
       setup_last_line: "Setup Finished"
       initial_connection_timeout: 60
       setup_finished_timeout: 60
-      droplet_state: "present"
+      # droplet_state: "present"
+      droplet_state: "deleted"
       api_token: "{{ env.DO_TOKEN }}"
       host_user: "{{ env.HOST_USER_NAME }}"
       host_pass: "{{ env.HOST_USER_PASS }}"

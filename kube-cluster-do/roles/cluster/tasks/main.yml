@@ -4,7 +4,7 @@
   register: tmp_file
   
 - set_fact:
-    run_tasks: p.stat.exists == False
+    run_tasks: tmp_file.stat.exists == False
   
 - name: initialize the cluster
   become: yes

@@ -18,3 +18,5 @@ kubectl get services
 kubectl delete deployment nginx
 
 kubectl get deployments
+
+# kubeadm reset

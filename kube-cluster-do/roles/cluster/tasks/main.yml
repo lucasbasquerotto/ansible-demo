@@ -5,6 +5,9 @@
   
 - set_fact:
     run_tasks: tmp_file.stat.exists == False
+
+- debug:
+    var: "{{ tmp_file }}"
   
 - name: initialize the cluster
   become: yes

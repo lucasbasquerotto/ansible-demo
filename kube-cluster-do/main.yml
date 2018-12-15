@@ -1,5 +1,5 @@
 - name: Play 01 - Define variables
-  hosts: main:masters:workers
+  hosts: main
   vars_files: 
     - /home/main/env/env.yml
   vars:
@@ -122,7 +122,8 @@
   hosts: masters
   gather_facts: no
   vars:
-    main: "{{ play_vars.main }}"
+    main_play_vars: hostvars[groups['main'][0]].play_vars
+    main: "{{ main_play_vars.main }}"
   roles:
   - role: test
     log_file: "{{ main.log_file }}"

@@ -1,3 +1,11 @@
+- name: check file "/home/{{host_user}}/.kube/config" exists
+  stat:
+    path: /etc/issue
+  register: tmp_file
+  
+- set_fact:
+    run_tasks: p.stat.exists == False
+  
 - name: initialize the cluster
   become: yes
   become_user: "{{host_user}}"
@@ -5,6 +13,7 @@
   args:
     chdir: $HOME
     creates: cluster_initialized.txt
+  when: run_tasks
 
 - name: create .kube directory
   become: yes
@@ -13,6 +22,7 @@
     path: $HOME/.kube
     state: directory
     mode: 0755
+  when: run_tasks
 
 - name: copy admin.conf to user's kube config
   copy:
@@ -20,6 +30,7 @@
     dest: "/home/{{host_user}}/.kube/config"
     remote_src: yes
     owner: "{{host_user}}"
+  when: run_tasks
 
 - name: install Pod network
   become: yes

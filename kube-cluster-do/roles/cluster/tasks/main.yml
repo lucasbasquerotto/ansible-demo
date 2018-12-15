@@ -32,6 +32,11 @@
     owner: "{{ host_user }}"
   when: run_tasks
 
+- name: Creates the "/home/{{ host_user }}/tmp" directory
+  file:
+    path: "/home/{{ host_user }}/tmp"
+    state: directory
+
 - name: copy local file "data/{{ kube_network_file }}" to host
   copy:
     src: "data/{{ kube_network_file }}"

@@ -123,8 +123,8 @@
 
 - name: Play 04 - Update hosts configuration
   hosts: masters:workers
-  gather_facts: no
   become: true
+  gather_facts: no
   vars_files: 
     - /home/main/env/env.yml
   vars:
@@ -148,6 +148,7 @@
 
 - name: Play 05 - Prepare the cluster
   hosts: masters
+  become: true
   roles:
   - role: cluster
   

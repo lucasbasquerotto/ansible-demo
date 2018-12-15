@@ -34,7 +34,7 @@
 
 - name: copy admin.conf to root's kube config
   copy:
-    src: /etc/kubernetes/admin.conf
+    src: "/home/{{host_user}}/.kube/config"
     dest: "/root/.kube/config"
     remote_src: yes
     owner: "root"

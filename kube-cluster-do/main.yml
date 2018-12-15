@@ -7,6 +7,8 @@
       hosts_file: "/home/main/ansible/hosts"
       log_file: "/var/log/setup.log"
       setup_last_line: "Setup Finished"
+      initial_connection_timeout: 60
+      setup_finished_timeout: 60
       droplet_state: "present"
       api_token: "{{ env.DO_TOKEN }}"
       host_user: "{{ env.HOST_USER_NAME }}"
@@ -125,11 +127,33 @@
     # main_play_vars: hostvars[groups['main'][0]].play_vars
     # main: "{{ main_play_vars.main }}"
     main:
-      hosts_file: "/home/main/ansible/hosts"
       log_file: "/var/log/setup.log"
+      setup_last_line: "Setup Finished"
+      initial_connection_timeout: 60
+      setup_finished_timeout: 60
   roles:
   - role: test
     log_file: "{{ main.log_file }}"
     setup_last_line: "{{ main.setup_last_line }}"
-    initial_connection_timeout: 60
-    setup_finished_timeout: 60
+    initial_connection_timeout: "{{ main.initial_connection_timeout }}"
+    setup_finished_timeout: "{{ main.setup_finished_timeout }}"
+
+###############################################################################
+
+- name: Play 05 - Update workers configuration
+  hosts: workers
+  gather_facts: no
+  vars:
+    # main_play_vars: hostvars[groups['main'][0]].play_vars
+    # main: "{{ main_play_vars.main }}"
+    main:
+      log_file: "/var/log/setup.log"
+      setup_last_line: "Setup Finished"
+      initial_connection_timeout: 60
+      setup_finished_timeout: 60
+  roles:
+  - role: test
+    log_file: "{{ main.log_file }}"
+    setup_last_line: "{{ main.setup_last_line }}"
+    initial_connection_timeout: "{{ main.initial_connection_timeout }}"
+    setup_finished_timeout: "{{ main.setup_finished_timeout }}"

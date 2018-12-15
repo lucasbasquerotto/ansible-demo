@@ -57,7 +57,7 @@
       do_tags:      
       - host
       - worker
-      droplets: "{{ main.workers_droplets }}"
+      droplets: "{{ main.worker_droplets }}"
   tasks:
   - set_fact:
       play_vars:

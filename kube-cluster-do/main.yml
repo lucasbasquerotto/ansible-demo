@@ -160,11 +160,13 @@
       host_user: "{{ env.HOST_USER_NAME }}"
       kube_network_directory: "{{ env.KUBE_NETWORK_DIRECTORY }}"
       kube_network_file: "{{ env.KUBE_NETWORK_FILE }}"
+      kubeadm_init_params: "{{ env.KUBEADM_INIT_PARAMS }}"
   roles:
   - role: cluster
     host_user: "{{ main.host_user }}"
     kube_network_directory: "{{ main.kube_network_directory }}"
     kube_network_file: "{{ main.kube_network_file }}"
+    kubeadm_init_params: "{{ main.kubeadm_init_params }}"
   
   - role: kube-run
     host_user: "{{ main.host_user }}"

@@ -10,10 +10,10 @@
     run_tasks: "{{ (tmp_file is not defined) or (tmp_file.stat.exists == False) }}"
 
 - debug: msg="tmp_file.stat = {{ tmp_file.stat }}"
-  when: run_tasks
+  when: tmp_file is defined
 
 - debug: msg="tmp_file.stat.exists = {{ tmp_file.stat.exists }}"
-  when: run_tasks
+  when: tmp_file is defined
 
 - debug: msg="run_tasks = {{ run_tasks }}"
   

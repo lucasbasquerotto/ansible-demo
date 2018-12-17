@@ -7,7 +7,7 @@
     var: "{{ tmp_file }}"
   
 - set_fact:
-    run_tasks: (tmp_file is not defined) or (tmp_file.stat.exists == False)
+    run_tasks: "{{ (tmp_file is not defined) or (tmp_file.stat.exists == False) }}"
 
 - debug: msg="run_tasks = {{ run_tasks }}"
   

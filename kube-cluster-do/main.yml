@@ -85,6 +85,7 @@
     setup_last_line: "{{ main.setup_last_line }}"
     initial_connection_timeout: "{{ main.initial_connection_timeout }}"
     setup_finished_timeout: "{{ main.setup_finished_timeout }}"
+    kube_network_directory: "{{ kube_network_directory }}"
     kube_network_file: "{{ main.kube_network_file }}"
     master_droplet_info: "{{ main.master_droplet_info }}" 
     worker_droplet_info: "{{ main.worker_droplet_info }}" 
@@ -156,6 +157,7 @@
   vars:
     main:
       host_user: "{{ env.HOST_USER_NAME }}"
+      kube_network_directory: "{{ KUBE_NETWORK_DIRECTORY }}"
       kube_network_file: "{{ env.KUBE_NETWORK_FILE }}"
   roles:
   - role: cluster

@@ -2,20 +2,9 @@
   stat:
     path: "/home/{{ host_user }}/.kube/config"
   register: tmp_file
-
-- debug:
-    var: "{{ tmp_file }}"
   
 - set_fact:
     run_tasks: "{{ (tmp_file is not defined) or (tmp_file.stat.exists == False) }}"
-
-- debug: msg="tmp_file.stat = {{ tmp_file.stat }}"
-  when: tmp_file is defined
-
-- debug: msg="tmp_file.stat.exists = {{ tmp_file.stat.exists }}"
-  when: tmp_file is defined
-
-- debug: msg="run_tasks = {{ run_tasks }}"
   
 - name: initialize the cluster
   become: yes
@@ -51,7 +40,7 @@
 
 - name: copy local file "data/{{ kube_network_file }}" to host
   copy:
-    src: "data/{{ kube_network_file }}"
+    src: "{{ kube_network_directory }}/{{ kube_network_file }}"
     dest: "/home/{{ host_user }}/tmp/{{ kube_network_file }}"
     mode: 0644
     owner: "{{ host_user }}"

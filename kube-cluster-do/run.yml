@@ -1,0 +1,38 @@
+- name: Play 05 - Prepare the cluster
+  hosts: masters
+  become: true
+  vars_files: 
+    - /home/main/env/env.yml
+  vars:
+    main:
+      host_user: "{{ env.HOST_USER_NAME }}"
+      kube_network_directory: "{{ env.KUBE_NETWORK_DIRECTORY }}"
+      kube_network_file: "{{ env.KUBE_NETWORK_FILE }}"
+      kube_etcd_endpoints: "{{ env.KUBE_ETCD_ENDPOINTS }}"
+      pod_cidr: "{{ env.POD_CIDR }}"
+      kubeadm_init_params: "{{ env.KUBEADM_INIT_PARAMS }}"
+  roles:
+  - role: cluster
+    host_user: "{{ main.host_user }}"
+    kube_network_directory: "{{ main.kube_network_directory }}"
+    kube_network_file: "{{ main.kube_network_file }}"
+    kube_etcd_endpoints: "{{ main.kube_etcd_endpoints }}"
+    pod_cidr: "{{ main.pod_cidr }}"
+    kubeadm_init_params: "{{ main.kubeadm_init_params }}"
+  
+  - role: kube-run
+    host_user: "{{ main.host_user }}"
+
+###############################################################################
+
+- name: Play 06 - Join the cluster
+  hosts: workers
+  become: true
+  vars_files: 
+    - /home/main/env/env.yml
+  vars:
+    main:
+      host_user: "{{ env.HOST_USER_NAME }}"
+  roles:
+  - role: kube-run
+    host_user: "{{ main.host_user }}"

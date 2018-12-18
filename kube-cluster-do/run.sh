@@ -18,6 +18,7 @@ rm -rf ansible-demo
 
 mkdir -p ~/env
 mv -vn ~/ansible/env.yml ~/env/env.yml
+mv -vn ~/ansible/hosts ~/env/hosts
 
 cd ~/ansible/
 ansible-playbook "$1"

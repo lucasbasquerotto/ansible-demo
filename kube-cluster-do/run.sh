@@ -20,4 +20,4 @@ mkdir -p ~/env
 mv -vn ~/ansible/env.yml ~/env/env.yml
 
 cd ~/ansible/
-ansible-playbook main.yml
+ansible-playbook "$1"

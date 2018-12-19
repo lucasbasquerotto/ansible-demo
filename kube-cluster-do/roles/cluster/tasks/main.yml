@@ -14,6 +14,7 @@
     state: directory
     mode: 0755
     owner: "{{ host_user }}"
+    group: "{{ host_user }}"
   
 - name: initialize the cluster
   become: true

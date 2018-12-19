@@ -1,0 +1,9 @@
+- name: Play 05 - Reset the cluster
+  hosts: masters
+  tasks:
+  - name: reset the cluster
+    become: true
+    shell: kubeadm reset
+    args:
+      chdir: "/var/log/kube"
+      creates: cluster_reseted.log

@@ -125,7 +125,7 @@
 
 ###############################################################################
 
-- name: Play 04 - Update hosts configuration
+- name: Play 04 - Install and update hosts packages
   hosts: masters:workers
   become: true
   gather_facts: no

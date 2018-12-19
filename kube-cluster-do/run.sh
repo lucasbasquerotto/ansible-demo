@@ -21,4 +21,9 @@ mv -vn ~/ansible/env.yml ~/env/env.yml
 mv -vn ~/ansible/hosts ~/env/hosts
 
 cd ~/ansible/
-ansible-playbook "$1"
+
+if [ $# -eq 0 ]; then
+	ansible-playbook main.yml run.yml
+else
+	ansible-playbook "$@"
+fi

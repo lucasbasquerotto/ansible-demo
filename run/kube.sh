@@ -20,3 +20,9 @@ kubectl delete deployment nginx
 kubectl get deployments
 
 # kubeadm reset
+
+# kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=NumCPU
+
+# kubectl get pods --all-namespaces
+
+# kubectl describe pod -n kube-system coredns-86c58d9df4-hq897

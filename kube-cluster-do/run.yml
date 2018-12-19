@@ -1,6 +1,5 @@
 - name: Play 05 - Prepare the cluster
   hosts: masters
-  become: true
   vars_files: 
     - /home/main/env/env.yml
   vars:
@@ -27,7 +26,6 @@
 
 - name: Play 06 - Join the cluster
   hosts: workers
-  become: true
   vars_files: 
     - /home/main/env/env.yml
   vars:

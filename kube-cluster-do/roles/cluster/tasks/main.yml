@@ -7,7 +7,7 @@
     run_tasks: "{{ (tmp_file is not defined) or (tmp_file.stat.exists == False) }}"
 
 - name: create /var/log/kube directory
-  become: yes
+  become: true
   # become_user: "{{ host_user }}"
   file:
     path: "/var/log/kube"
@@ -16,14 +16,13 @@
     owner: "{{ host_user }}"
   
 - name: initialize the cluster
-  become: yes
+  become: true
   # become_user: "{{ host_user }}"
   shell: kubeadm init {{ kubeadm_init_params | default('') }} >> /var/log/kube/cluster_initialized.log
   when: run_tasks
 
 - name: create .kube directory
-  become: yes
-  # become_user: "{{ host_user }}"
+  become: true
   file:
     path: "/home/{{ host_user }}/.kube"
     state: directory
@@ -55,8 +54,4 @@
     pod_cidr: "{{ pod_cidr }}"
 
 - name: install Pod network
-  become: yes
-  # become_user: "{{ host_user }}"
   shell: kubectl apply --timeout 120s --filename "/home/{{ host_user }}/tmp/{{ kube_network_file }}" >> /var/log/kube/pod_network_setup.log
-  #shell: kubectl apply --filename https://git.io/weave-kube-1.6 >> /var/log/kube/pod_network_setup.txt
-  #shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml >> /var/log/kube/pod_network_setup.txt

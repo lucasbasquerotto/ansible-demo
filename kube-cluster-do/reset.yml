@@ -1,9 +1,25 @@
 - name: Play 05 - Reset the cluster
   hosts: masters
+  vars_files: 
+    - /home/main/env/env.yml
+  vars:
+    main:
+      host_user: "{{ env.HOST_USER_NAME }}"
   tasks:
+  - name: create /var/log/kube directory
+    become: true
+    file:
+      path: "/var/log/kube"
+      state: directory
+      mode: 0755
+      owner: "{{ host_user }}"
+
   - name: reset the cluster
     become: true
-    shell: kubeadm reset
-    args:
-      chdir: "/var/log/kube"
-      creates: cluster_reseted.log
+    shell: kubeadm reset >> /var/log/kube/reset.log
+
+  - name: create .kube directory
+    become: true
+    file:
+      path: "/home/{{ host_user }}/.kube"
+      state: absent

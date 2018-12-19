@@ -19,9 +19,6 @@
   become: yes
   # become_user: "{{ host_user }}"
   shell: kubeadm init {{ kubeadm_init_params | default('') }} >> /var/log/kube/cluster_initialized.log
-  args:
-    chdir: "/var/log/kube"
-    creates: cluster_initialized.log
   when: run_tasks
 
 - name: create .kube directory
@@ -61,8 +58,5 @@
   become: yes
   # become_user: "{{ host_user }}"
   shell: kubectl apply --timeout 120s --filename "/home/{{ host_user }}/tmp/{{ kube_network_file }}" >> /var/log/kube/pod_network_setup.log
-  #shell: kubectl apply --filename https://git.io/weave-kube-1.6 >> pod_network_setup.txt
-  #shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml >> pod_network_setup.txt
-  args:
-    chdir: "/var/log/kube"
-    creates: pod_network_setup.log
+  #shell: kubectl apply --filename https://git.io/weave-kube-1.6 >> /var/log/kube/pod_network_setup.txt
+  #shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.9.1/Documentation/kube-flannel.yml >> /var/log/kube/pod_network_setup.txt

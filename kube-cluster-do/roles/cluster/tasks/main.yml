@@ -8,7 +8,6 @@
 
 - name: create /var/log/kube directory
   become: true
-  # become_user: "{{ host_user }}"
   file:
     path: "/var/log/kube"
     state: directory
@@ -23,7 +22,6 @@
   when: run_tasks
 
 - name: create .kube directory
-  become: true
   file:
     path: "/home/{{ host_user }}/.kube"
     state: directory

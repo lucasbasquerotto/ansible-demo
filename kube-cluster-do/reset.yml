@@ -16,7 +16,7 @@
 
   - name: reset the cluster
     become: true
-    shell: kubeadm reset >> /var/log/kube/reset.log
+    shell: kubeadm reset -f >> /var/log/kube/reset.log
 
   - name: create .kube directory
     become: true

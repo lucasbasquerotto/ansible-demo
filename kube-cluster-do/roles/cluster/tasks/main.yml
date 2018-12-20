@@ -30,6 +30,7 @@
   when: run_tasks
 
 - name: copy admin.conf to user's kube config
+  become: true
   copy:
     src: /etc/kubernetes/admin.conf
     dest: "/home/{{ host_user }}/.kube/config"

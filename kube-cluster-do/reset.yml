@@ -12,7 +12,7 @@
       path: "/var/log/kube"
       state: directory
       mode: 0755
-      owner: "{{ host_user }}"
+      owner: "{{ main.host_user }}"
 
   - name: reset the cluster
     become: true

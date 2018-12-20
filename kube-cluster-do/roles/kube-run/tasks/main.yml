@@ -30,9 +30,11 @@
   wait_for: "host={{ item['ansible_default_ipv4']['address'] }} port=6443 timeout=1"
   with_items:
   - "{{ master_hosts }}"
+  loop_control:
+    label: "{{ item['ansible_default_ipv4']['address'] }}"
   when: "'workers' in group_names"
 
 - name: join cluster
   become: true
-  shell: "{{ hostvars[groups['masters'][0]].join_command }} >> /var/log/node_joined.log"
+  shell: "{{ master_hosts[0].join_command }} >> /var/log/node_joined.log"
   when: "'workers' in group_names"

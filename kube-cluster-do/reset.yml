@@ -18,7 +18,7 @@
     become: true
     shell: kubeadm reset -f >> /var/log/kube/reset.log
 
-  - name: create .kube directory
+  - name: delete the /home/{{ main.host_user }}/.kube directory
     become: true
     file:
       path: "/home/{{ main.host_user }}/.kube"

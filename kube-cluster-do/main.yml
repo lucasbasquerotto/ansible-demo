@@ -3,22 +3,7 @@
   vars_files: 
     - /home/main/env/env.yml
   vars:
-    main:
-      api_token: "{{ env.DO_TOKEN }}"
-      host_user: "{{ env.HOST_USER_NAME }}"
-      host_pass: "{{ env.HOST_USER_PASS }}"
-      host_ssh_public_key: "{{ env.SSH_PUBLIC_KEY }}"
-      hosts_file: "{{ env.HOSTS_FILE }}"
-      log_file: "{{ env.LOG_FILE }}"
-      setup_last_line: "{{ env.SETUP_LAST_LINE }}"
-      initial_connection_timeout: "{{ env.INITIAL_CONNECTION_TIMEOUT }}"
-      setup_finished_timeout: "{{ env.SETUP_FINISHED_TIMEOUT }}"
-      kube_network_directory: "{{ env.KUBE_NETWORK_DIRECTORY }}"
-      kube_network_file: "{{ env.KUBE_NETWORK_FILE }}"
-      master_droplet_info: "{{ env.MASTER_DROPLET_INFO }}" 
-      worker_droplet_info: "{{ env.WORKER_DROPLET_INFO }}" 
-      master_droplets: "{{ env.MASTER_DROPLETS }}"
-      worker_droplets: "{{ env.WORKER_DROPLETS }}"
+    main: "{{ env }}"
     main_host_vars: 
       host_user: "{{ main.host_user }}"
       host_pass: "{{ main.host_pass }}"
@@ -59,6 +44,7 @@
       do_tags:      
       - host
       - worker
+      - web
       droplets: "{{ main.worker_droplets }}"
   tasks:
   - set_fact:
@@ -132,11 +118,7 @@
   vars_files: 
     - /home/main/env/env.yml
   vars:
-    main:
-      log_file: "{{ env.LOG_FILE }}"
-      setup_last_line: "{{ env.SETUP_LAST_LINE }}"
-      initial_connection_timeout: "{{ env.INITIAL_CONNECTION_TIMEOUT }}"
-      setup_finished_timeout: "{{ env.SETUP_FINISHED_TIMEOUT }}"
+    main: "{{ env }}"
   roles:
   - role: test
     log_file: "{{ main.log_file }}"

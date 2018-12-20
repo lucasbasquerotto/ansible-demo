@@ -3,13 +3,7 @@
   vars_files: 
     - /home/main/env/env.yml
   vars:
-    main:
-      host_user: "{{ env.HOST_USER_NAME }}"
-      kube_network_directory: "{{ env.KUBE_NETWORK_DIRECTORY }}"
-      kube_network_file: "{{ env.KUBE_NETWORK_FILE }}"
-      kube_etcd_endpoints: "{{ env.KUBE_ETCD_ENDPOINTS }}"
-      pod_cidr: "{{ env.POD_CIDR }}"
-      kubeadm_init_params: "{{ env.KUBEADM_INIT_PARAMS }}"
+    main: "{{ env }}"
   roles:
   - role: cluster
     host_user: "{{ main.host_user }}"
@@ -29,8 +23,7 @@
   vars_files: 
     - /home/main/env/env.yml
   vars:
-    main:
-      host_user: "{{ env.HOST_USER_NAME }}"
+    main: "{{ env }}"
   roles:
   - role: kube-run
     host_user: "{{ main.host_user }}"

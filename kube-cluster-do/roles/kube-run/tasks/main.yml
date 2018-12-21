@@ -37,4 +37,4 @@
 - name: join cluster
   become: true
   shell: "{{ master_host.join_command }} >> /var/log/node_joined.log"
-  when: ('workers' in group_names) and (join_command is changed)
+  when: ('workers' in group_names) and (join_command | changed)

@@ -10,31 +10,31 @@
     join_command: "{{ join_command_raw.stdout_lines[0] }}"
   when: "'masters' in group_names"
 
-# - name: set master hosts vars
-#   set_fact:
-#     master_hosts: "{{ groups['masters'] | map(v -> hostvars[v]) }}"
-#   when: "'workers' in group_names"
-
-- name: set master hosts vars
-  set_fact: 
-    master_hosts: '{{ (master_hosts | default([])) + [hostvars[item]] }}'
-  with_items: "{{ groups['masters'] | list }}"
-  when: "'workers' in group_names"
-
 - name: verify if there are masters
   fail: 
     msg: "There were no masters found"
-  when: ('workers' in group_names) and ((master_hosts | default([])) | length == 0)
+  when: ('workers' in group_names) and (groups['masters'] | list | length == 0)
 
-- name: TCP port 6443 on masters is reachable from workers
-  wait_for: "host={{ item['ansible_default_ipv4']['address'] }} port=6443 timeout=1"
-  with_items:
-  - "{{ master_hosts }}"
-  loop_control:
-    label: "{{ item['ansible_default_ipv4']['address'] }}"
+- name: set master hosts vars
+  set_fact: 
+    master_host: '{{ hostvars[groups['masters'][0]] }}'
+  when: "'workers' in group_names"
+
+- name: set master join command
+  set_fact: 
+    join_command: '{{ master_host.join_command }}'
+  when: "'workers' in group_names"
+
+- name: verify master join command
+  fail: 
+    msg: "There were no master join command"
+  when: ('workers' in group_names) and (join_command is defined)
+
+- name: TCP port 6443 on master is reachable from worker
+  wait_for: "host={{ master_host['ansible_default_ipv4']['address'] }} port=6443 timeout=1"
   when: "'workers' in group_names"
 
 - name: join cluster
   become: true
-  shell: "{{ master_hosts[0].join_command }} >> /var/log/node_joined.log"
-  when: "'workers' in group_names"
+  shell: "{{ master_host.join_command }} >> /var/log/node_joined.log"
+  when: ('workers' in group_names) and (join_command is changed)

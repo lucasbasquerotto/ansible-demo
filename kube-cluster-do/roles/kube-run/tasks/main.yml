@@ -17,12 +17,12 @@
 
 - name: set master hosts vars
   set_fact: 
-    master_host: '{{ hostvars[groups['masters'][0]] }}'
+    master_host: "{{ hostvars[groups['masters'][0]] }}"
   when: "'workers' in group_names"
 
 - name: set master join command
   set_fact: 
-    join_command: '{{ master_host.join_command }}'
+    join_command: "{{ master_host.join_command }}"
   when: "'workers' in group_names"
 
 - name: verify master join command

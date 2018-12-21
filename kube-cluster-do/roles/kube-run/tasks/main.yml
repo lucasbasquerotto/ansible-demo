@@ -28,7 +28,7 @@
 - name: verify master join command
   fail: 
     msg: "There were no master join command"
-  when: ('workers' in group_names) and (join_command is defined)
+  when: ('workers' in group_names) and (join_command is not defined)
 
 - name: TCP port 6443 on master is reachable from worker
   wait_for: "host={{ master_host['ansible_default_ipv4']['address'] }} port=6443 timeout=1"

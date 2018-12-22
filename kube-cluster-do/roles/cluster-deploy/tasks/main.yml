@@ -3,15 +3,3 @@
 
 - name: expose the deployment
   shell: kubectl expose deployment my-deployment --type={{ type }} --port {{ myPort }} --target-port {{ targetPort }}
-
-- name: get nodes
-  shell: kubectl get nodes
-  register: nodes
-
-- debug: var=nodes.stdout_lines
-
-- name: get services
-  shell: kubectl get services
-  register: services
-
-- debug: var=services.stdout_lines

@@ -179,13 +179,22 @@
 - name: Play 07 - Create and expose a deployment (nginx)
   hosts: masters
   tags:
-    - run
+    - deploy
   roles:
-  - role: deploy
+  - role: cluster-deploy
 
 ###############################################################################
 
-- name: Play 08 - Reset the cluster
+- name: Play 08 - Print information about the nodes and services
+  hosts: masters
+  tags:
+    - status
+  roles:
+  - role: cluster-status
+
+###############################################################################
+
+- name: Play 09 - Reset the cluster
   hosts: masters:workers
   tags:
     # never run, unless the cluster-reset tag is specified

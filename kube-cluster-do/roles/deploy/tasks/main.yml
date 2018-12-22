@@ -2,7 +2,7 @@
   shell: kubectl create deployment my-deployment --image {{ image }}
 
 - name: expose the deployment
-  shell: kubectl expose deployment my-deployment --type={{ type }} --port {{ port }} --target-port {{ targetPort }}
+  shell: kubectl expose deployment my-deployment --type={{ type }} --port {{ myPort }} --target-port {{ targetPort }}
 
 - name: get services
   shell: kubectl get services

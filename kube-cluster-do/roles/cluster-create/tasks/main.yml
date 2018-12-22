@@ -48,6 +48,11 @@
   when: "run_tasks and 'workers' in group_names"
   #when: run_tasks and ('workers' in group_names) and (join_command is changed)
 
+- name: create the /home/{{ host_user }}/.tmp directory
+  file:
+    path: "/home/{{ host_user }}/.tmp"
+    state: directory
+
 - name: create the /home/{{ host_user }}/.tmp/join file
   copy:
     content: ""

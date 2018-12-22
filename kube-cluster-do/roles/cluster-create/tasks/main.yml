@@ -1,4 +1,4 @@
-- name: check file "/home/{{ host_user }}/.tmp/join" exists
+- name: check if the file "/home/{{ host_user }}/.tmp/join" exists
   stat:
     path: "/home/{{ host_user }}/.tmp/join"
   register: tmp_file
@@ -52,6 +52,7 @@
   file:
     path: "/home/{{ host_user }}/.tmp"
     state: directory
+  when: run_tasks
 
 - name: create the /home/{{ host_user }}/.tmp/join file
   copy:

@@ -57,6 +57,12 @@ $ ./run.sh
 ./run.sh --tags "cluster-reset"
 ```
 
+Then, if you want to create the cluster and deploy the services again:
+
+```
+./run.sh --tags "cluster,deploy,status"
+```
+
 9) To delete all droplets except the first one created (the ansible server):
 
 ```

@@ -17,13 +17,8 @@ mv ansible-demo/kube-cluster-do/* ansible/
 rm -rf ansible-demo
 
 mkdir -p ~/env
-mv -vn ~/ansible/env.yml ~/env/env.yml
-mv -vn ~/ansible/hosts ~/env/hosts
+mv -vn ~/ansible/env/env.yml ~/env/env.yml
+mv -vn ~/ansible/env/hosts ~/env/hosts
 
 cd ~/ansible/
-
-if [ $# -eq 0 ]; then
-	ansible-playbook main.yml run.yml
-else
-	ansible-playbook "$@"
-fi
+ansible-playbook main.yml "$@"

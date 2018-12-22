@@ -8,9 +8,11 @@ kubectl get nodes
 #kubectl run nginx --image=nginx --port 80
 kubectl create deployment my-nginx --image nginx
 
+#kubectl port-forward deployment/my-nginx 80:80
+
 #kubectl expose deploy nginx --port 80 --target-port 80 --type NodePort
 #kubectl expose deployment my-nginx --type=LoadBalancer --port=8080
-kubectl expose deployment my-nginx --type=LoadBalancer --port 80 --target-port 80
+kubectl expose deployment my-nginx --type=LoadBalancer --port 80 --target-port 80 --node-port 31000
 
 kubectl get services
 

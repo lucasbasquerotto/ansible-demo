@@ -1,0 +1,17 @@
+- name: create /var/log/kube directory
+  become: true
+  file:
+    path: "/var/log/kube"
+    state: directory
+    mode: 0755
+    owner: "{{ host_user }}"
+
+- name: reset the cluster
+  become: true
+  shell: kubeadm reset -f >> /var/log/kube/reset.log
+
+- name: delete the /home/{{ host_user }}/.kube directory
+  become: true
+  file:
+    path: "/home/{{ host_user }}/.kube"
+    state: absent

@@ -1,5 +1,7 @@
 - name: Play 01 - Define variables
   hosts: main
+  tags:
+    - setup
   vars_files: 
     - /home/main/env/env.yml
   vars:
@@ -57,6 +59,8 @@
 
 - name: Play 02 - Verify if variables are defined
   hosts: main
+  tags:
+    - setup
   vars:
     main: "{{ play_vars.main }}"
     masters: "{{ play_vars.masters }}"
@@ -85,6 +89,8 @@
 
 - name: Play 03 - Update hosts configuration
   hosts: main
+  tags:
+    - setup
   vars:
     masters: "{{ play_vars.masters }}"
     workers: "{{ play_vars.workers }}"
@@ -113,6 +119,8 @@
 
 - name: Play 04 - Install and update hosts packages
   hosts: masters:workers
+  tags:
+    - setup
   become: true
   gather_facts: no
   vars_files: 
@@ -132,3 +140,63 @@
 
 ###############################################################################
 
+- name: Play 05 - Prepare the cluster
+  hosts: masters
+  tags:
+    - cluster
+  vars_files: 
+    - /home/main/env/env.yml
+  vars:
+    main: "{{ env }}"
+  roles:
+  - role: prepare-cluster
+    host_user: "{{ main.host_user }}"
+    kube_network_directory: "{{ main.kube_network_directory }}"
+    kube_network_file: "{{ main.kube_network_file }}"
+    kube_etcd_endpoints: "{{ main.kube_etcd_endpoints }}"
+    pod_cidr: "{{ main.pod_cidr }}"
+    kubeadm_init_params: "{{ main.kubeadm_init_params }}"
+  
+  - role: cluster-create
+    host_user: "{{ main.host_user }}"
+
+###############################################################################
+
+- name: Play 06 - Join the cluster
+  hosts: workers
+  tags:
+    - cluster
+  vars_files: 
+    - /home/main/env/env.yml
+  vars:
+    main: "{{ env }}"
+  roles:
+  - role: cluster-create
+    host_user: "{{ main.host_user }}"
+
+###############################################################################
+
+- name: Play 07 - Create and expose a deployment (nginx)
+  hosts: workers
+  tags:
+    - run
+  roles:
+  - role: deploy
+
+###############################################################################
+
+- name: Play 08 - Reset the cluster
+  hosts: masters
+  tags:
+    # never run, unless the cluster-reset tag is specified
+    - never
+    - cluster-reset
+  vars_files: 
+    - /home/main/env/env.yml
+  vars:
+    main: "{{ env }}"
+  roles:
+  - role: cluster-reset
+    host_user: "{{ main.host_user }}"
+
+###############################################################################

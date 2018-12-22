@@ -2,4 +2,10 @@
   shell: kubectl create deployment my-deployment --image {{ image }}
 
 - name: expose the deployment
-  shell: kubectl expose deployment my-deployment --type={{ type }} --port {{ port }} --target-port {{ targetPort }} --node-port {{ nodePort }}
+  shell: kubectl expose deployment my-deployment --type={{ type }} --port {{ port }} --target-port {{ targetPort }}
+
+- name: get services
+  shell: kubectl get services
+  register: services
+
+- debug: var=services.stdout_lines

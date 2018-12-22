@@ -1,3 +1,11 @@
+- name: check file "/home/{{ host_user }}/.tmp/join" exists
+  stat:
+    path: "/home/{{ host_user }}/.tmp/join"
+  register: tmp_file
+  
+- set_fact:
+    run_tasks: "{{ (tmp_file is not defined) or (tmp_file.stat.exists == False) }}"
+
 - name: get join command
   become: true
   # become_user: "{{host_user}}"
@@ -39,3 +47,9 @@
   shell: "{{ master_host.join_command }} >> /var/log/node_joined.log"
   when: "run_tasks and 'workers' in group_names"
   #when: ('workers' in group_names) and (join_command is changed)
+
+- name: create the /home/{{ host_user }}/.tmp/join file
+  file:
+    path: "/home/{{ host_user }}/.tmp/join"
+    state: file
+  when: run_tasks

@@ -1,3 +1,4 @@
+deployment-name: my-deployment
 image: nginx
 #type: LoadBalancer
 type: NodePort

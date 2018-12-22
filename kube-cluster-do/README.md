@@ -54,7 +54,7 @@ $ ./run.sh
 8) To reset the cluster (if needed):
 
 ```
-./run.sh --tags "cluster-reset"
+./run.sh --tags "reset"
 ```
 
 Then, if you want to create the cluster and deploy the services again:
@@ -79,7 +79,7 @@ Instead of running with:
 ```
 $ ./run.sh
 and
-$ ./run.sh --tags "cluster-reset"
+$ ./run.sh --tags "reset"
 ```
 
 You can run with:
@@ -89,7 +89,7 @@ $ cd ~/ansible
 $ ansible-playbook main.yml
 and
 $ cd ~/ansible
-$ ansible-playbook main.yml "cluster-reset"
+$ ansible-playbook main.yml "reset"
 ```
 
 (this won't update the repository with changes, while with `./run.sh` will, except for the files inside the `env` directory, that are defined only in the 1st run)

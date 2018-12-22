@@ -1,11 +1,29 @@
-- name: delete the service (if already created)
-  shell: kubectl delete service my-deployment
-
-- name: delete the deployment (if already created)
-  kubectl delete deployment my-deployment
+- name: check if the file "/home/{{ host_user }}/.tmp/deploy" exists
+  stat:
+    path: "/home/{{ host_user }}/.tmp/join"
+  register: tmp_file
+  
+- set_fact:
+    run_tasks: "{{ (tmp_file is not defined) or (tmp_file.stat.exists == False) }}"
 
 - name: create the deployment
-  shell: kubectl create deployment my-deployment --image {{ image }}
+  shell: kubectl create deployment {{ deployment-name }} --image {{ image }}
+  when: run_tasks
 
 - name: expose the deployment
-  shell: kubectl expose deployment my-deployment --type={{ type }} --port {{ myPort }} --target-port {{ targetPort }}
+  shell: kubectl expose deployment {{ deployment-name }} --type={{ type }} --port {{ myPort }} --target-port {{ targetPort }}
+  when: run_tasks
+
+- name: create the /home/{{ host_user }}/.tmp directory
+  file:
+    path: "/home/{{ host_user }}/.tmp"
+    state: directory
+  when: run_tasks
+
+- name: create the /home/{{ host_user }}/.tmp/deploy file
+  copy:
+    content: ""
+    dest: "/home/{{ host_user }}/.tmp/deploy"
+    force: no
+    mode: 0644
+  when: run_tasks

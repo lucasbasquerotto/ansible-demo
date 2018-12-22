@@ -194,12 +194,28 @@
 
 ###############################################################################
 
-- name: Play 09 - Reset the cluster
+- name: Play 09 - Undeploy the cluster services
+  hosts: masters
+  tags:
+    # never run, unless the cluster-reset tag is specified
+    - never
+    - undeploy
+  vars_files: 
+    - /home/main/env/env.yml
+  vars:
+    main: "{{ env }}"
+  roles:
+  - role: cluster-undeploy
+    host_user: "{{ main.host_user }}"
+
+###############################################################################
+
+- name: Play 10 - Reset the cluster
   hosts: masters:workers
   tags:
     # never run, unless the cluster-reset tag is specified
     - never
-    - cluster-reset
+    - reset
   vars_files: 
     - /home/main/env/env.yml
   vars:

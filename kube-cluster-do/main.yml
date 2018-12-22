@@ -177,7 +177,7 @@
 ###############################################################################
 
 - name: Play 07 - Create and expose a deployment (nginx)
-  hosts: workers
+  hosts: masters
   tags:
     - run
   roles:

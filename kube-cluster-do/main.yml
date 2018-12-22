@@ -149,7 +149,7 @@
   vars:
     main: "{{ env }}"
   roles:
-  - role: prepare-cluster
+  - role: cluster-prepare
     host_user: "{{ main.host_user }}"
     kube_network_directory: "{{ main.kube_network_directory }}"
     kube_network_file: "{{ main.kube_network_file }}"

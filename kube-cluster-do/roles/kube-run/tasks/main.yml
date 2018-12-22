@@ -3,39 +3,39 @@
   # become_user: "{{host_user}}"
   shell: kubeadm token create --print-join-command
   register: join_command_raw
-  when: "'masters' in group_names"
+  when: "run_tasks and 'masters' in group_names"
 
 - name: set join command
   set_fact:
     join_command: "{{ join_command_raw.stdout_lines[0] }}"
-  when: "'masters' in group_names"
+  when: "run_tasks and 'masters' in group_names"
 
 - name: verify if there are masters
   fail: 
     msg: "There were no masters found"
-  when: ('workers' in group_names) and (groups['masters'] | list | length == 0)
+  when: run_tasks and ('workers' in group_names) and (groups['masters'] | list | length == 0)
 
 - name: set master hosts vars
   set_fact: 
     master_host: "{{ hostvars[groups['masters'][0]] }}"
-  when: "'workers' in group_names"
+  when: "run_tasks and 'workers' in group_names"
 
 - name: set master join command
   set_fact: 
     join_command: "{{ master_host.join_command }}"
-  when: "'workers' in group_names"
+  when: "run_tasks and 'workers' in group_names"
 
 - name: verify master join command
   fail: 
     msg: "There were no master join command"
-  when: ('workers' in group_names) and (join_command is not defined)
+  when: run_tasks and ('workers' in group_names) and (join_command is not defined)
 
 - name: TCP port 6443 on master is reachable from worker
   wait_for: "host={{ master_host['ansible_default_ipv4']['address'] }} port=6443 timeout=1"
-  when: "'workers' in group_names"
+  when: "run_tasks and 'workers' in group_names"
 
 - name: join cluster
   become: true
   shell: "{{ master_host.join_command }} >> /var/log/node_joined.log"
-  when: "'workers' in group_names"
+  when: "run_tasks and 'workers' in group_names"
   #when: ('workers' in group_names) and (join_command is changed)

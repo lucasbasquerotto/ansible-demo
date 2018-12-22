@@ -6,12 +6,6 @@
 - set_fact:
     run_tasks: "{{ (tmp_file is not defined) or (tmp_file.stat.exists == False) }}"
 
-- debug:
-    var: tmp_file
-
-- debug: 
-    msg: "tmp_file.stat.exists = {{ tmp_file.stat.exists }}"
-
 - name: create the deployment
   shell: kubectl create deployment {{ deployment_name }} --image {{ image }}
   when: run_tasks

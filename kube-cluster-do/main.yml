@@ -180,8 +180,13 @@
   hosts: masters
   tags:
     - deploy
+  vars_files: 
+    - /home/main/env/env.yml
+  vars:
+    main: "{{ env }}"
   roles:
   - role: cluster-deploy
+    host_user: "{{ main.host_user }}"
 
 ###############################################################################
 

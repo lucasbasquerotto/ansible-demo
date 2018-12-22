@@ -18,7 +18,7 @@ kubectl delete service my-nginx
 
 kubectl get services
 
-kubectl delete deployment  my-nginx
+kubectl delete deployment my-nginx
 
 kubectl get deployments
 

@@ -1,6 +1,6 @@
 1) Create an account in Digital Ocean (if you don't have already)
 
-2) Generate a token in https://cloud.digitalocean.com/account/api/tokens?i=5f28a9
+2) Generate a token in https://cloud.digitalocean.com/account/api/tokens
 
 3) Create Firewalls in https://cloud.digitalocean.com/networking/firewalls to allow requests from anywhere to any of the droplets.
 
@@ -18,7 +18,6 @@
 ```
 - Accept the fingerprint (if asked, type 'yes' and press ENTER)
 - SSH password: abc321
-```
 ```
 
 6) Verify that the droplet preparation is finished
@@ -87,4 +86,4 @@ $ cd ~/ansible
 $ ansible-playbook main.yml "cluster-reset"
 ```
 
-(this won't update the repository with changes, while with ./run.sh will, except for the files inside the `env` directory, that are defined only in the 1st run)
+(this won't update the repository with changes, while with `./run.sh` will, except for the files inside the `env` directory, that are defined only in the 1st run)

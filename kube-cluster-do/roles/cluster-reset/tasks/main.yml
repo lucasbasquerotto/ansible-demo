@@ -16,10 +16,3 @@
     path: "/home/{{ host_user }}/.kube"
     state: absent
   when: "'masters' in group_names"
-
-- name: delete the /etc/kubernetes/kubelet.conf file
-  become: true
-  file:
-    path: /etc/kubernetes/kubelet.conf
-    state: absent
-  when: "'workers' in group_names"

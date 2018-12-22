@@ -5,12 +5,10 @@
     state: directory
     mode: 0755
     owner: "{{ host_user }}"
-  when: "'masters' in group_names"
 
 - name: reset the cluster
   become: true
   shell: kubeadm reset -f >> /var/log/kube/reset.log
-  when: "'masters' in group_names"
 
 - name: delete the /home/{{ host_user }}/.kube directory
   become: true

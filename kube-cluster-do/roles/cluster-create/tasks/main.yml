@@ -49,7 +49,9 @@
   #when: run_tasks and ('workers' in group_names) and (join_command is changed)
 
 - name: create the /home/{{ host_user }}/.tmp/join file
-  file:
-    path: "/home/{{ host_user }}/.tmp/join"
-    state: file
+  copy:
+    content: ""
+    dest: "/home/{{ host_user }}/.tmp/join"
+    force: no
+    mode: 0644
   when: run_tasks

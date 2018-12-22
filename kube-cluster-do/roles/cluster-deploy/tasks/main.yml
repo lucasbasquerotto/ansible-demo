@@ -1,3 +1,9 @@
+- name: delete the service (if already created)
+  shell: kubectl delete service my-deployment
+
+- name: delete the deployment (if already created)
+  kubectl delete deployment my-deployment
+
 - name: create the deployment
   shell: kubectl create deployment my-deployment --image {{ image }}
 

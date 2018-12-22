@@ -197,7 +197,7 @@
 - name: Play 09 - Undeploy the cluster services
   hosts: masters
   tags:
-    # never run, unless the cluster-reset tag is specified
+    # never run, unless the 'undeploy' tag is specified
     - never
     - undeploy
   vars_files: 
@@ -213,7 +213,7 @@
 - name: Play 10 - Reset the cluster
   hosts: masters:workers
   tags:
-    # never run, unless the cluster-reset tag is specified
+    # never run, unless the 'reset' tag is specified
     - never
     - reset
   vars_files: 

@@ -14,7 +14,6 @@
   file:
     path: "/home/{{ host_user }}/.tmp/join"
     state: absent
-  when: "'masters' in group_names"
 
 - name: delete the /home/{{ host_user }}/.kube directory
   become: true

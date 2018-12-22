@@ -1,6 +1,6 @@
 - name: check if the file "/home/{{ host_user }}/.tmp/deploy" exists
   stat:
-    path: "/home/{{ host_user }}/.tmp/join"
+    path: "/home/{{ host_user }}/.tmp/deploy"
   register: tmp_file
   
 - set_fact:

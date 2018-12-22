@@ -7,11 +7,11 @@
     run_tasks: "{{ (tmp_file is not defined) or (tmp_file.stat.exists == False) }}"
 
 - name: create the deployment
-  shell: kubectl create deployment {{ deployment-name }} --image {{ image }}
+  shell: kubectl create deployment {{ deployment_name }} --image {{ image }}
   when: run_tasks
 
 - name: expose the deployment
-  shell: kubectl expose deployment {{ deployment-name }} --type={{ type }} --port {{ myPort }} --target-port {{ targetPort }}
+  shell: kubectl expose deployment {{ deployment_name }} --type={{ type }} --port {{ my_port }} --target-port {{ target_port }}
   when: run_tasks
 
 - name: create the /home/{{ host_user }}/.tmp directory

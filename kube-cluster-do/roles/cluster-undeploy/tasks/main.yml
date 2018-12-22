@@ -1,9 +1,9 @@
 - name: delete the service (if already created)
-  shell: kubectl delete service {{ deployment-name }}
+  shell: kubectl delete service {{ deployment_name }}
   ignore_errors: yes 
 
 - name: delete the deployment (if already created)
-  shell: kubectl delete deployment {{ deployment-name }}
+  shell: kubectl delete deployment {{ deployment_name }}
   ignore_errors: yes 
 
 - name: delete the /home/{{ host_user }}/.tmp/deploy file

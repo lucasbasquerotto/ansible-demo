@@ -1,7 +1,6 @@
-deployment-name: my-deployment
+deployment_name: my-deployment
 image: nginx
 #type: LoadBalancer
 type: NodePort
-myPort: 80
-targetPort: 80
-nodePort: 31000
+my_port: 80
+target_port: 80

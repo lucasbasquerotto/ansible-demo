@@ -186,7 +186,7 @@
 ###############################################################################
 
 - name: Play 08 - Reset the cluster
-  hosts: masters
+  hosts: masters:workers
   tags:
     # never run, unless the cluster-reset tag is specified
     - never

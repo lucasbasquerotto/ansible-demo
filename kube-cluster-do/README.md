@@ -89,7 +89,7 @@ $ cd ~/ansible
 $ ansible-playbook main.yml
 and
 $ cd ~/ansible
-$ ansible-playbook main.yml "reset"
+$ ansible-playbook main.yml --tags "reset"
 ```
 
 (this won't update the repository with changes, while with `./run.sh` will, except for the files inside the `env` directory, that are defined only in the 1st run)

@@ -182,6 +182,16 @@ echo "Ansible Installed" >> "/var/log/setup.log"
 
 apt install -y python-pip
 
+echo "Python Installed" >> "/var/log/setup.log"
+	
+sudo -u "$USERNAME" bash <<-EOF 
+	yes | pip install 'dopy>=0.3.5,<=0.3.5'
+EOF
+
 echo "Setup Finished" >> "/var/log/setup.log"
 
-# On error, verify with: $ tail -n 100 /var/log/cloud-init-output.log
+# After the first login, verify if the last line is "Setup Finished" with: 
+# $ tail /var/log/setup.log
+#
+# On error, verify the logs running the following: 
+# $ tail -n 100 /var/log/cloud-init-output.log

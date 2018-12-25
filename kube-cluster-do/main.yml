@@ -205,6 +205,7 @@
     # never run, unless the 'undeploy' tag is specified
     - never
     - undeploy
+    - reset
   vars_files: 
     - /home/main/env/env.yml
   vars:

@@ -76,7 +76,7 @@ After running the playbook, you should see the new droplets created in your Digi
 
 For example, if the machine `worker-001` IP is `100.110.120.130` and in the end of the ansible output the `services.stdout_lines` has the service `my-deployment` with the `PORT(S)` field value equal to `80:30507/TCP`, then you can access the worker in the browser typing `100.110.120.130:30507`.
 
-You can run with `$ ./run.sh --tags "status"` to print the status again.
+You can run `$ ./run.sh --tags "status"` to print the status again.
 
 After accessing the worker in the browser, you should see a nginx information saying `Welcome to nginx!`.
 

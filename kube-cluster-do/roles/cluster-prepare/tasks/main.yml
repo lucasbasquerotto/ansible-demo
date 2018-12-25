@@ -14,10 +14,14 @@
     mode: 0755
     owner: "{{ host_user }}"
     group: "{{ host_user }}"
+
+- name: Set "/proc/sys/net/bridge/bridge-nf-call-iptables" if needed
+  become: true
+  shell: sysctl net.bridge.bridge-nf-call-iptables={{ bridge_nf_call_iptables }}
+  when: run_tasks and (bridge_nf_call_iptables is defined) and (bridge_nf_call_iptables != "")
   
 - name: initialize the cluster
   become: true
-  # become_user: "{{ host_user }}"
   shell: kubeadm init {{ kubeadm_init_params | default('') }} >> /var/log/kube/cluster_initialized.log
   when: run_tasks
 

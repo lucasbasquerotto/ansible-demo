@@ -155,6 +155,7 @@
     kube_network_file: "{{ main.kube_network_file }}"
     kube_etcd_endpoints: "{{ main.kube_etcd_endpoints }}"
     pod_cidr: "{{ main.pod_cidr }}"
+    bridge_nf_call_iptables: "{{ main.bridge_nf_call_iptables }}"
     kubeadm_init_params: "{{ main.kubeadm_init_params }}"
   
   - role: cluster-create

@@ -26,9 +26,7 @@
         ipv6: "{{ main.master_droplet_info.ipv6 }}"
         wait_timeout: "{{ main.master_droplet_info.wait_timeout }}"
         user_data: "{{ main_aux.master_user_data }}"
-      do_tags:      
-      - host
-      - kube
+      do_tags: "{{ main.master_tags }}"
       droplets: "{{ main.master_droplets }}"
     workers:
       hosts_group: 'workers'
@@ -43,10 +41,7 @@
         ipv6: "{{ main.worker_droplet_info.ipv6 }}"
         wait_timeout: "{{ main.worker_droplet_info.wait_timeout }}"
         user_data: "{{ main_aux.worker_user_data }}"
-      do_tags:      
-      - host
-      - worker
-      - web
+      do_tags: "{{ main.worker_tags }}"
       droplets: "{{ main.worker_droplets }}"
   tasks:
   - set_fact:

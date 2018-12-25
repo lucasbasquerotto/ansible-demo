@@ -77,7 +77,6 @@
     initial_connection_timeout: "{{ main.initial_connection_timeout }}"
     setup_finished_timeout: "{{ main.setup_finished_timeout }}"
     kube_network_directory: "{{ main.kube_network_directory }}"
-    kube_network_file: "{{ main.kube_network_file }}"
     master_droplet_info: "{{ main.master_droplet_info }}" 
     worker_droplet_info: "{{ main.worker_droplet_info }}" 
     master_droplets: "{{ main.master_droplets }}"
@@ -152,7 +151,7 @@
   - role: cluster-prepare
     host_user: "{{ main.host_user }}"
     kube_network_directory: "{{ main.kube_network_directory }}"
-    kube_network_file: "{{ main.kube_network_file }}"
+    kube_network_files: "{{ main.kube_network_files }}"
     kube_etcd_endpoints: "{{ main.kube_etcd_endpoints }}"
     pod_cidr: "{{ main.pod_cidr }}"
     bridge_nf_call_iptables: "{{ main.bridge_nf_call_iptables }}"

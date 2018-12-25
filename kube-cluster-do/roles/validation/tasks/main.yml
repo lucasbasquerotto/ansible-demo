@@ -13,7 +13,6 @@
   - { name: "initial_connection_timeout", value: "{{ initial_connection_timeout }}" }
   - { name: "setup_finished_timeout", value: "{{ setup_finished_timeout }}" }
   - { name: "kube_network_directory", value: "{{ kube_network_directory }}" }
-  - { name: "kube_network_file", value: "{{ kube_network_file }}" }
   - { name: "master_droplet_info", value: "{{ master_droplet_info }}" }
   - { name: "worker_droplet_info", value: "{{ worker_droplet_info }}" }
   - { name: "master_droplets", value: "{{ master_droplets }}" }

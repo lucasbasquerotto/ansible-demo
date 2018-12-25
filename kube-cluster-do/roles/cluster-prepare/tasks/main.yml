@@ -47,15 +47,19 @@
     path: "/home/{{ host_user }}/tmp"
     state: directory
 
-- name: copy the local template file "data/{{ kube_network_file }}" to host
+- name: copy the kube network files to the host
   template:
-    src: "{{ kube_network_directory }}/{{ kube_network_file }}"
-    dest: "/home/{{ host_user }}/tmp/{{ kube_network_file }}"
+    src: "{{ kube_network_directory }}/{{ item }}"
+    dest: "/home/{{ host_user }}/tmp/{{ item }}"
     mode: 0644
     owner: "{{ host_user }}"
   vars: 
     kube_etcd_endpoints: "{{ kube_etcd_endpoints }}"
     pod_cidr: "{{ pod_cidr }}"
+  with_items:
+  - "{{ kube_network_files }}"
 
 - name: install Pod network
-  shell: kubectl apply --timeout 120s --filename "/home/{{ host_user }}/tmp/{{ kube_network_file }}" >> /var/log/kube/pod_network_setup.log
+  shell: kubectl apply --filename "/home/{{ host_user }}/tmp/{{ item }}"
+  with_items:
+  - "{{ kube_network_files }}"

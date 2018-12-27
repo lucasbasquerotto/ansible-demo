@@ -2,13 +2,13 @@
 
 Setup for using **Ansible** to create droplets in **Digital Ocean**, making 1 of them a **Kubernetes Master** and the others to be **Workers**, starting a **Cluster** and deploying a nginx **Service**.
 
-1) Create an account in Digital Ocean (if you don't have already)
+### 1) Create an account in Digital Ocean (if you don't have already)
 
-2) Generate a token in https://cloud.digitalocean.com/account/api/tokens
+### 2) Generate a token in https://cloud.digitalocean.com/account/api/tokens
 
-3) Create Firewalls in https://cloud.digitalocean.com/networking/firewalls to allow requests from anywhere to any of the droplets.
+### 3) Create Firewalls in https://cloud.digitalocean.com/networking/firewalls to allow requests from anywhere to any of the droplets.
 
-	3.1) For a more granular (and secure) approach using tags:
+#### 3.1) For a more granular (and secure) approach using tags:
 
 ```
 - Firewall01 (External SSH): [YourIP] -> Port 22 -> (tag) main
@@ -25,7 +25,7 @@ The kubernetes masters and workers can access each other in any port, to avoid e
 
 The workers have the `web` tag, allowing them to be accessed from anywhere in all ports (for a demo, it should be fine, but for production servers a loadbalancer should be included to receive connections from the internet and forward them to the correct pods in the correct ports).
 
-4) Create a droplet in Digital Ocean:
+### 4) Create a droplet in Digital Ocean:
 
 ```
 - Ubuntu 18.04
@@ -34,21 +34,21 @@ The workers have the `web` tag, allowing them to be accessed from anywhere in al
 - Tags: main
 ```
 
-5) Connect to the droplet through SSH:
+### 5) Connect to the droplet through SSH:
 
 ```
 - Accept the fingerprint (if asked, type 'yes' and press ENTER)
 - SSH password: abc321
 ```
 
-6) Verify that the droplet preparation is finished
+### 6) Verify that the droplet preparation is finished
 
 ```
 - Run: tail /var/log/setup.log
 - See if the last line printed is: "Setup Finished" (wait until it isn't finished)
 ```
 
-7) Prepare the script to download the repository and run the playbook:
+### 7) Prepare the script to download the repository and run the playbook:
 
 ```
 $ nano run.sh
@@ -57,7 +57,7 @@ Save and exit: Ctrl+X -> y -> ENTER
 chmod +x run.sh
 ```
 
-7) Run the script:
+### 8) Run the script:
 
 ```
 ./run.sh
@@ -80,7 +80,7 @@ You can run `$ ./run.sh --tags "status"` to print the status again.
 
 After accessing the worker in the browser, you should see a nginx information saying `Welcome to nginx!`.
 
-8) To reset the cluster (if needed):
+### 9) To reset the cluster (if needed):
 
 ```
 ./run.sh --tags "reset"
@@ -98,7 +98,7 @@ Then, if you want to create the cluster and deploy the services again:
 ./run.sh --tags "cluster,deploy,status"
 ```
 
-9) To delete all droplets except the first one created (the ansible server):
+### 10) To delete all droplets except the first one created (the ansible server):
 
 ```
 $ nano ~/env/env.yml
@@ -107,7 +107,7 @@ Save and exit: Ctrl+X -> y -> ENTER
 $ ./run.sh
 ```
 
-10) Alternatives to running ansible:
+### 11) Alternatives to run ansible:
 
 Instead of running with:
 
@@ -127,4 +127,4 @@ $ cd ~/ansible
 $ ansible-playbook main.yml --tags "reset"
 ```
 
-(this won't update the repository with changes, while with `./run.sh` will, except for the files inside the `env` directory, that are defined only in the 1st run)
+(this won't update the repository with changes, while with `./run.sh` will (good for development), except for the files inside the `env` directory, that are defined only in the 1st run)

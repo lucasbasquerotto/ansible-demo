@@ -54,8 +54,9 @@
     mode: 0644
     owner: "{{ host_user }}"
   vars: 
-    kube_etcd_endpoints: "{{ kube_etcd_endpoints }}"
-    pod_cidr: "{{ pod_cidr }}"
+    env:
+      kube_etcd_endpoints: "{{ kube_etcd_endpoints }}"
+      pod_cidr: "{{ pod_cidr }}"
   with_items:
   - "{{ kube_network_files }}"
 

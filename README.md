@@ -45,7 +45,7 @@ The workers have the `web` tag, allowing them to be accessed from anywhere in al
 
 ```
 - Run: tail /var/log/setup.log
-- See if the last line printed is: "Setup Finished" (wait until it isn't finished)
+- See if the last line printed is: "Setup Finished" (wait while it isn't finished)
 ```
 
 ### 7) Prepare the script to download the repository and run the playbook:
